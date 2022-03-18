@@ -4,7 +4,8 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/springboottry
+      url: jdbc:mysql://localhost:3306/coding_education
+#      url: jdbc:mysql://localhost:3306/springboottry
       username: root
       password: root
 

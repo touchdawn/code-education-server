@@ -21,7 +21,7 @@ public class UserServiceTest {
     @Test
     void testGetPage(){
         //IPage page = new Page(2,2);
-        IPage<User> page = new Page<User>(2,2);
+        IPage<User> page = new Page<User>(1,2);
         IPage<User> page1 = userService.page(page);
         System.out.println(page1.getSize());
         System.out.println(page1.getCurrent());

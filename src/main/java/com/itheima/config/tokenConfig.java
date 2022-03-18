@@ -9,7 +9,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class tokenConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new JwtInterceptor()).addPathPatterns("/**").excludePathPatterns("/users/login","/users/register").excludePathPatterns("/data","/test");
+        registry.addInterceptor(new JwtInterceptor()).addPathPatterns("/**")
+                .excludePathPatterns("/users/login","/users/register")
+                .excludePathPatterns("/data","/test","/files/getToken")
+                .excludePathPatterns("/files/addNewFile");
+
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 }
