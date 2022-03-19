@@ -25,10 +25,11 @@ public class UserController {
         Boolean aBoolean = userService.checkPassword(user.getPhone(), user.getPassword());
         //if (USERNAME.equals(user.getName()) && PASSWORD.equals(user.getPassword())){
         if (aBoolean){
+            User userByPhone = userService.findUserByPhone(user.getPhone());
             //添加token
-            user.setToken(JwtUtil.createToken(user));
+            userByPhone.setToken(JwtUtil.createToken(userByPhone));
             //System.out.println(user);
-            return ApiResult.T("registerSuccess",userService.findUserByPhone(user.getPhone()));
+            return ApiResult.T("registerSuccess",userByPhone);
         }
         return ApiResult.F("950", "密码错误");
     }

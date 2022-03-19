@@ -9,6 +9,7 @@ import com.itheima.domain.FileStorage;
 import com.itheima.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -23,7 +24,8 @@ public class FileStorageImpl extends ServiceImpl<FileStorageDao, FileStorage> im
     }
 
     @Override
-    public Boolean saveFile(FileStorage fileStorage) throws Exception{
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean saveFile(FileStorage fileStorage) throws Exception {
         FileStorage f = fileStorageDao.checkUrlExist(fileStorage.getUrl());
         if (f == null) {
             try {
