@@ -25,15 +25,19 @@ public class JwtInterceptor implements HandlerInterceptor {
         ApiResult apiResult = new ApiResult();
         try{
             JwtUtil.checkToken(token);
+            System.out.println("鉴权成功");
             return true;
         } catch (io.jsonwebtoken.SignatureException | MalformedJwtException e) {
             e.printStackTrace();
             apiResult = ApiResult.F("",HttpStatus.UNAUTHORIZED.toString());
+            System.out.println("token错误");
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
+            System.out.println("token为空");
             apiResult = ApiResult.F("998","token为空");
         } catch (Exception e){
             e.printStackTrace();
+            System.out.println("token其他错误");
             apiResult = ApiResult.F("990","token错误");
         }
         String jsonRes = objectMapper.writeValueAsString(apiResult);

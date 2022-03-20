@@ -36,4 +36,9 @@ public class UserServiceTest {
         System.out.println(aBoolean);
     }
 
+    @Test
+    void timeSampTest(){
+        Boolean checkTime = (Long.parseLong("11111111111")-System.currentTimeMillis())<= 3000000;
+    }
+
 }

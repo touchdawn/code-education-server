@@ -2,7 +2,9 @@ package com.itheima.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.itheima.controller.utils.ApiResult;
 import com.itheima.domain.User;
+import java.util.Map;
 
 public interface IUserService extends IService<User> {
 
@@ -31,4 +33,6 @@ public interface IUserService extends IService<User> {
      * @return user
      */
     User findUserByPhone(String phone);
+
+    ApiResult doRegister(Map<String, String> map);
 }

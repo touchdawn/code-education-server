@@ -4,13 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.itheima.controller.utils.ApiResult;
 import com.itheima.dao.UserDao;
 import com.itheima.domain.User;
 import com.itheima.service.IUserService;
+import com.itheima.util.JwtUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -60,5 +64,47 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
     @Override
     public User findUserByPhone(String phone) {
         return userDao.findByPhone(phone);
+    }
+
+    @Override
+    public ApiResult doRegister(Map<String, String> map) {
+
+        System.out.println(map);
+        Map<String, Object> resultMap = new HashMap<>();
+        String phone = map.get("phone");
+        String name = map.get("name");
+        String email = map.get("email");
+        String verifyCode = map.get("verifyCode");
+        String password = map.get("password");
+        String codeFromServer = map.get("verifyCode");
+        String tampFromServer = map.get("tampFromServer");
+//        Boolean checkEmailResult = checkEmailResult(email);
+        Boolean checkEmailResult = false;
+
+        Boolean checkPhoneResult = checkUserExist(phone);
+
+//        Boolean checkPhoneResult = userService.checkUserExist(user.getPhone());
+//        Boolean checkEmailResult = userService.checkEmailResult(user.getEmail());
+        Boolean checkVerifyCode = (Objects.equals(verifyCode, codeFromServer));
+//        Boolean checkTime = (Long.parseLong(tampFromServer)-System.currentTimeMillis())<= 3000000;
+        if (!checkVerifyCode){
+            return  ApiResult.F("","验证码不正确");
+        } else if (!checkPhoneResult && !checkEmailResult){ //如果用户不存在且手机未注册
+            User user = new User();
+            user.setToken("");
+            user.setEmail(email);
+            user.setName(name);
+            user.setPhone(phone);
+            user.setPassword(password);
+            user.setCreatedAt(new Date());
+            user.setUpdatedAt(new Date());
+            save(user);
+            //添加token
+            user.setToken(JwtUtil.createToken(user));
+            System.out.println(user);
+            return ApiResult.T("registerSuccess",user);
+        } else {
+            return ApiResult.F();
+        }
     }
 }

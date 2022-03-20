@@ -8,6 +8,11 @@ spring:
 #      url: jdbc:mysql://localhost:3306/springboottry
       username: root
       password: root
+  mail:
+    username: 3282145600@qq.com
+    password: rkjogdexonimdbbg
+    host: smtp.qq.com
+    default-encoding: UTF-8
 
 mybatis-plus:
   global-config:

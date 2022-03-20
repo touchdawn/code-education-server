@@ -9,7 +9,7 @@ import com.itheima.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -35,20 +35,10 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ApiResult register(@RequestBody User user){
-        Boolean checkPhoneResult = userService.checkUserExist(user.getPhone());
-        Boolean checkEmailResult = userService.checkEmailResult(user.getEmail());
-        if (!checkPhoneResult && !checkEmailResult){ //如果用户不存在且邮箱未注册
-            user.setToken("");
-            user.setCreatedAt(new Date());
-            user.setUpdatedAt(new Date());
-            userService.save(user);
-            //添加token
-            user.setToken(JwtUtil.createToken(user));
-            System.out.println(user);
-            return ApiResult.T("registerSuccess",user);
-        }
-        return ApiResult.F("951", "该用户/邮箱已存在，请直接登录");
+//    public ApiResult register(@RequestParam(value="phone",required=true)String phone,String email,String name){
+        public ApiResult register(@RequestBody Map<String, String> map){
+//        return ApiResult.F("951", "该用户/邮箱已存在，请直接登录");
+        return userService.doRegister(map);
     }
 
     @GetMapping("/checkToken")
