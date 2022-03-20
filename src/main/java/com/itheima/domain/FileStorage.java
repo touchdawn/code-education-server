@@ -8,7 +8,10 @@ import java.util.Date;
 public class FileStorage {
     private Integer id;
     private String url;
-    private Integer createId;
+    private Integer creatorId;
     private Integer deleteFlag;
     private Date createdAt;
+    private String sourceName;
+    private Integer lessonRel;
+    private Integer order;
 }

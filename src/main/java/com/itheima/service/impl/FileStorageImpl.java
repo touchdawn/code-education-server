@@ -1,9 +1,6 @@
 package com.itheima.service.impl;
 
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.itheima.controller.utils.ApiResult;
 import com.itheima.dao.FileStorageDao;
 import com.itheima.domain.FileStorage;
 import com.itheima.service.FileStorageService;
