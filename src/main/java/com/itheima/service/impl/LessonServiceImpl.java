@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> implements LessonService {
@@ -23,7 +24,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
 
     @Override
     public ApiResult getAllLessons() {
-        List<LessonInfo> allLessons = lessonInfoDao.getAllLessons();
+        List<Map<String,String>> allLessons = lessonInfoDao.getAllLessons();
         return ApiResult.T(allLessons);
     }
 
