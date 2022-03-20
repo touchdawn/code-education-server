@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itheima.controller.utils.ApiResult;
 import com.itheima.util.JwtUtil;
 import io.jsonwebtoken.MalformedJwtException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +28,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             return true;
         } catch (io.jsonwebtoken.SignatureException | MalformedJwtException e) {
             e.printStackTrace();
-            apiResult = ApiResult.F("999","token无效");
+            apiResult = ApiResult.F("",HttpStatus.UNAUTHORIZED.toString());
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             apiResult = ApiResult.F("998","token为空");
