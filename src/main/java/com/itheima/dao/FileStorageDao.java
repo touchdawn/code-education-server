@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface FileStorageDao extends BaseMapper<FileStorage> {
 
-    @Select("select * from file_storage where url = #{url}")
+    @Select("select * from file_storage where URL = #{url}")
     FileStorage checkUrlExist(String url);
 
 }

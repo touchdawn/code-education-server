@@ -10,5 +10,9 @@ public class LessonInfo {
     private String lessonName;
     private Integer creatorId;
     private Integer status;
-    private Date createdAt;
+    private Date createAt;
+    private Integer score;
+    private Integer subscribeNum;
+    private String courseIntroduction;
+    private Integer fileRel;
 }

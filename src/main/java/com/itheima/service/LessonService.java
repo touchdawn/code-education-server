@@ -9,4 +9,6 @@ public interface LessonService extends IService<LessonInfo> {
     Boolean testT(Integer testInt);
 
     ApiResult getAllLessons();
+
+    ApiResult getCourseInfo(Integer courseId);
 }

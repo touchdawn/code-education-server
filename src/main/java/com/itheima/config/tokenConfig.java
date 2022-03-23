@@ -12,6 +12,7 @@ public class tokenConfig implements WebMvcConfigurer {
         registry.addInterceptor(new JwtInterceptor()).addPathPatterns("/**")
                 .excludePathPatterns("/users/login","/users/register","/sendEmail")
                 .excludePathPatterns("/data","/test")
+//                .excludePathPatterns("/lesson/getCourseInfo?courseId=3")
 //                .excludePathPatterns("/files/addNewFile","/files/getToken")
         ;
 

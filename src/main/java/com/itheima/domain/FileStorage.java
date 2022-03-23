@@ -13,5 +13,6 @@ public class FileStorage {
     private Date createdAt;
     private String sourceName;
     private Integer lessonRel;
+    private Integer sectionRel;
     private Integer order;
 }
