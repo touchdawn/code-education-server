@@ -2,11 +2,15 @@ package com.itheima.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itheima.controller.utils.ApiResult;
+import com.itheima.dao.FileStorageDao;
 import com.itheima.dao.ImgStorageDao;
 import com.itheima.dao.LessonChapterSectionDao;
 import com.itheima.dao.LessonInfoDao;
-import com.itheima.domain.ImgStorage;
+import com.itheima.domain.FileStorage;
+import com.itheima.domain.LessonChapterSection;
 import com.itheima.domain.LessonInfo;
+import com.itheima.service.FileStorageService;
+import com.itheima.service.LessonChapterSectionService;
 import com.itheima.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +24,13 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
     private LessonInfoDao lessonInfoDao;
 
     @Autowired
-    private ImgStorageDao imgStorageDao;
+    private FileStorageDao fileStorageDao;
+
+    @Autowired
+    private FileStorageService fileStorageService;
+
+    @Autowired
+    private LessonChapterSectionService lessonChapterSectionService;
 
     @Autowired
     private LessonChapterSectionDao  lessonChapterSectionDao;
@@ -81,4 +91,45 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
             return ApiResult.F("","添加失败");
         }
     }
+
+    @Override
+    public ApiResult getLessonByTeacherId(Integer id) {
+        List<LessonInfo> checkPassedList = lessonInfoDao.getAllByTeacherId(id, 1);
+        List<LessonInfo> checkingList = lessonInfoDao.getAllByTeacherId(id, 0);
+        Map<String,List> map = new HashMap<>();
+        map.put("checkPassedList",checkPassedList);
+        map.put("checkingList",checkingList);
+        return ApiResult.T(map);
+    }
+
+    @Override
+    public ApiResult addNewSectionVideo(Map<String, String> map) {
+//        try {
+            FileStorage fileStorage = new FileStorage();
+            fileStorage.setCreatorId(Integer.parseInt(map.get("creatorId")));
+            fileStorage.setUrl(map.get("lessonVideo"));
+            fileStorage.setCreatedAt(new Date());
+            fileStorageService.save(fileStorage);
+
+            Integer fileId = fileStorageDao.findIdByUrl(map.get("lessonVideo"));
+            LessonChapterSection lessonChapterSection = new LessonChapterSection();
+            lessonChapterSection.setCreateAt(new Date());
+            lessonChapterSection.setFileRel(fileId);
+            lessonChapterSection.setTitle(map.get("sectionName"));
+            lessonChapterSection.setParentId(Integer.parseInt(map.get("parentId")));
+            lessonChapterSection.setLessonRel(Integer.parseInt(map.get("courseId")));
+            lessonChapterSectionService.save(lessonChapterSection);
+//        } catch (Exception e) {
+//            return ApiResult.F("", String.valueOf(e));
+//        }
+        return ApiResult.T();
+    }
+
+
+
+//    public List addQiniuUrl(List<LessonInfo> listInput){
+//        listInput.forEach(item ->{
+//            item.getImgUrl(). = item.getImgUrl();
+//        });
+//    };
 }

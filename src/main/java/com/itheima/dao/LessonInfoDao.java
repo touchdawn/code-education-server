@@ -15,4 +15,7 @@ public interface LessonInfoDao extends BaseMapper<LessonInfo> {
             "on lesson_info.ID = fs.LESSON_REL " +
             "and lesson_info.STATUS = 1")
     List<Map<String,String>> getAllLessons();
+
+    @Select("select * from lesson_info where CREATOR_ID=#{id} and STATUS = #{status} ORDER BY CREATE_AT desc ")
+    List<LessonInfo> getAllByTeacherId(Integer id, Integer status);
 }

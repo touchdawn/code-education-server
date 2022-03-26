@@ -14,4 +14,8 @@ public interface LessonService extends IService<LessonInfo> {
     ApiResult getCourseInfo(Integer courseId);
 
     ApiResult addNewCourse(Map<String, String> map);
+
+    ApiResult getLessonByTeacherId(Integer id);
+
+    ApiResult addNewSectionVideo(Map<String, String> map);
 }

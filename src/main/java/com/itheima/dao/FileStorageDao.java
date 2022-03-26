@@ -12,4 +12,6 @@ public interface FileStorageDao extends BaseMapper<FileStorage> {
     @Select("select * from file_storage where URL = #{url}")
     FileStorage checkUrlExist(String url);
 
+    @Select("select ID from file_storage where URL = #{url}")
+    Integer findIdByUrl(String url);
 }
