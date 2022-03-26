@@ -15,8 +15,11 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface UserDao extends BaseMapper<User> {
 
-    @Select("select password from user where phone = #{phone}")
-    String getPassword(String phone);
+    @Select("select password from user where email = #{email}")
+    String getPassword(String email);
+
+    @Select("select password from user where id = #{id}")
+    String getPasswordById(Integer id);
 
     @Select("select phone from user where phone = #{phone}")
     Boolean checkUserPhoneExistOrNot(String phone);
@@ -27,4 +30,9 @@ public interface UserDao extends BaseMapper<User> {
     @Select("select * from user where phone = #{phone}")
     User findByPhone (String phone);
 
+    @Select("select * from user where email = #{email}")
+    User findByEmail (String email);
+
+    @Select("select * from user where id = #{id}")
+    User selectById(Integer id);
 }

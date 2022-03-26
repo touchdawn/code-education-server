@@ -22,14 +22,14 @@ public class UserController {
     // private final String PASSWORD = "123123";
     @GetMapping("/login")
     public ApiResult login(User user){
-        Boolean aBoolean = userService.checkPassword(user.getPhone(), user.getPassword());
+        Boolean aBoolean = userService.checkPassword(user.getEmail(), user.getPassword());
         //if (USERNAME.equals(user.getName()) && PASSWORD.equals(user.getPassword())){
         if (aBoolean){
-            User userByPhone = userService.findUserByPhone(user.getPhone());
+            User userByEmail = userService.findUserByEmail(user.getEmail());
             //添加token
-            userByPhone.setToken(JwtUtil.createToken(userByPhone));
+            userByEmail.setToken(JwtUtil.createToken(userByEmail));
             //System.out.println(user);
-            return ApiResult.T("registerSuccess",userByPhone);
+            return ApiResult.T("registerSuccess",userByEmail);
         }
         return ApiResult.F("950", "密码错误");
     }
@@ -45,6 +45,21 @@ public class UserController {
     public Boolean checkToken(HttpServletRequest request){
         String token = request.getHeader("token");
         return JwtUtil.checkToken(token);
+    };
+
+    @GetMapping("/getById/{id}")
+    public ApiResult getByUserId(@PathVariable Integer id){
+        return userService.getByUserId(id);
+    };
+
+    @PostMapping("/updateUserById")
+    public ApiResult updateUserById(@RequestBody User user){
+        return userService.updateUserById(user);
+    };
+
+    @PostMapping("/changePassword")
+    public ApiResult changePassword(@RequestBody Map<String, String> map){
+        return userService.changePassword(map);
     };
 
     @GetMapping

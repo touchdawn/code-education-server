@@ -11,10 +11,10 @@ public interface IUserService extends IService<User> {
     IPage<User> getPage(int currentPage, int pageSize, User user);
 
     /**
-     * @param phone,password
-     * @return 根据手机号密码登录
+     * @param email,password
+     * @return 根据邮箱密码登录
      */
-    Boolean checkPassword(String phone,String password);
+    Boolean checkPassword(String email,String password);
 
     /**
      * @param phone
@@ -34,5 +34,18 @@ public interface IUserService extends IService<User> {
      */
     User findUserByPhone(String phone);
 
+
+    /**
+     * @param email
+     * @return user
+     */
+    User findUserByEmail(String email);
+
     ApiResult doRegister(Map<String, String> map);
+
+    ApiResult getByUserId(Integer id);
+
+    ApiResult updateUserById(User user);
+
+    ApiResult changePassword(Map map);
 }

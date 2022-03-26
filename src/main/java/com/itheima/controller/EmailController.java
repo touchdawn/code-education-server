@@ -1,6 +1,7 @@
 package com.itheima.controller;
 
 import com.itheima.controller.utils.ApiResult;
+import com.itheima.dao.UserDao;
 import com.itheima.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSendException;
@@ -20,26 +21,36 @@ public class EmailController {
 @Autowired
 private JavaMailSender javaMailSender;
 
+@Autowired
+private UserDao userDao;
+
     private Map<String, Object> resultMap = new HashMap<>();
     @PostMapping("/sendEmail")
     public ApiResult sendEmail(@RequestBody User user){
-        SimpleMailMessage message = new SimpleMailMessage();
-        String code = VerifyCode(6);
-        message.setFrom("3282145600@qq.com");
-        message.setTo(user.getEmail());
-        message.setSubject("【教培APP】");// 标题
-        message.setText("【教培APP】你的验证码为："+code+"，有效时间为5分钟(若不是本人操作，可忽略该条邮件)");// 内容
-        try {
-            javaMailSender.send(message);
-            System.out.println("success");
-            saveCode(code);
-            return ApiResult.T(resultMap);
-        }catch (MailSendException e){
-            System.out.println("目标邮箱不存在");;
-            return ApiResult.F("","目标邮箱不存在");
-        } catch (Exception e) {
-            System.out.println("文本邮件发送异常！");;
-            return ApiResult.F("","文本邮件发送异常");
+        String receivedEmail = user.getEmail();
+        if (userDao.findByEmail(receivedEmail) == null) {
+            SimpleMailMessage message = new SimpleMailMessage();
+            String code = VerifyCode(6);
+            message.setFrom("3282145600@qq.com");
+            message.setTo(user.getEmail());
+            message.setSubject("【教培APP】");// 标题
+            message.setText("【教培APP】你的验证码为：" + code + "，有效时间为5分钟(若不是本人操作，可忽略该条邮件)");// 内容
+            try {
+                javaMailSender.send(message);
+                System.out.println("success");
+                saveCode(code);
+                return ApiResult.T(resultMap);
+            } catch (MailSendException e) {
+                System.out.println("目标邮箱不存在");
+                ;
+                return ApiResult.F("", "目标邮箱不存在");
+            } catch (Exception e) {
+                System.out.println("文本邮件发送异常！");
+                ;
+                return ApiResult.F("", "文本邮件发送异常");
+            }
+        }else {
+            return ApiResult.F("","用户已存在");
         }
 
     }

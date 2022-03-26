@@ -3,10 +3,9 @@ package com.itheima.controller;
 import com.itheima.controller.utils.ApiResult;
 import com.itheima.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/lesson")
@@ -23,5 +22,10 @@ public class LessonController {
     @GetMapping("/getCourseInfo/{courseId}")
     public ApiResult getCourseInfo(@PathVariable Integer courseId){
         return lessonService.getCourseInfo(courseId);
+    }
+
+    @PostMapping("/addNewCourse")
+    public ApiResult addNewCourse(@RequestBody Map<String, String> map){
+        return lessonService.addNewCourse(map);
     }
 }

@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static java.lang.Integer.parseInt;
+
 @Service
 public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUserService {
 
@@ -36,15 +38,14 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
     }
 
     @Override
-    public Boolean checkPassword(String phone, String password) {
+    public Boolean checkPassword(String email, String password) {
         //LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<User>();
         //LambdaQueryWrapper<User> queryWrapper1 = lqw.eq(User::getName, name);
         //LambdaQueryWrapper<User> queryWrapper = lqw.eq(User::getName, name).eq(User::getPassword, password);
         //return queryWrapper != null;
-        boolean equals = Objects.equals(userDao.getPassword(phone), password);
+        boolean equals = Objects.equals(userDao.getPassword(email), password);
         return equals;
     }
-
 
     /**
      *@param phone
@@ -64,6 +65,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
     @Override
     public User findUserByPhone(String phone) {
         return userDao.findByPhone(phone);
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        return userDao.findByEmail(email);
     }
 
     @Override
@@ -98,6 +104,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
             user.setPassword(password);
             user.setCreatedAt(new Date());
             user.setUpdatedAt(new Date());
+            user.setAvatar("default%20avatar.png");
             save(user);
             //添加token
             user.setToken(JwtUtil.createToken(user));
@@ -105,6 +112,50 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
             return ApiResult.T("registerSuccess",user);
         } else {
             return ApiResult.F();
+        }
+    }
+
+    @Override
+    public ApiResult getByUserId(Integer id) {
+        User user = userDao.selectById(id);
+        if (user != null){
+            if (user.getAvatar() == null) {
+                user.setAvatar("defaultAvatar2.png");
+            }
+            return  ApiResult.T(user);
+        } else {
+            return  ApiResult.F("","用户不存在");
+        }
+    }
+
+    @Override
+    public ApiResult updateUserById(User user) {
+        Integer userId = user.getId();
+        User user1 = userDao.selectById(userId);
+        user1.setAvatar(user.getAvatar());
+        user1.setNickName(user.getNickName());
+        user1.setPhone(user.getPhone());
+        user1.setUpdatedAt(new Date());
+        int i = userDao.updateById(user1);
+        if (i>0){
+            return ApiResult.T("成功");
+        }
+        return ApiResult.F("","更新失败");
+    }
+
+    @Override
+    public ApiResult changePassword(Map map) {
+        String oldPwd = map.get("oldPassword").toString();
+        String newPwd = map.get("newPassword").toString();
+        Integer id = parseInt((map.get("id").toString()));
+        String pwdInSql = userDao.getPasswordById(id);
+        if (Objects.equals(pwdInSql, oldPwd)){
+            User user = userDao.selectById(id);
+            user.setPassword(newPwd);
+            userDao.updateById(user);
+            return ApiResult.T();
+        } else {
+            return ApiResult.F("","密码不正确");
         }
     }
 }

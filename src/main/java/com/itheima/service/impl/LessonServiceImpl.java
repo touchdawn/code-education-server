@@ -11,10 +11,7 @@ import com.itheima.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> implements LessonService {
@@ -41,13 +38,15 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
 
     @Override
     public ApiResult getCourseInfo(Integer courseId){
-        ImgStorage courseImgInfo = imgStorageDao.findByCourseId(courseId);
+//        ImgStorage courseImgInfo = imgStorageDao.findByCourseId(courseId);
         Map<String,Object> map = new HashMap<>();
-        map.put("imgUrl",courseImgInfo.getImgUrl());
+//        map.put("imgUrl",courseImgInfo.getImgUrl());
         LessonInfo courseMainInfo = lessonInfoDao.selectById(courseId);
         map.put("introduction",courseMainInfo.getCourseIntroduction());
         map.put("subscribeNum",courseMainInfo.getSubscribeNum().toString());
         map.put("score",courseMainInfo.getScore().toString());
+        map.put("imgUrl",courseMainInfo.getImgUrl());
+        map.put("courseType",courseMainInfo.getCourseType());
 
         List<Object> chapterList = new ArrayList<>();
 
@@ -61,5 +60,25 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
 
         map.put("chapter",chapterList);
         return ApiResult.T(map);
+    }
+
+    @Override
+    public ApiResult addNewCourse(Map<String, String> map) {
+        LessonInfo lessonInfo = new LessonInfo();
+        lessonInfo.setLessonName(map.get("courseName"));
+        lessonInfo.setCourseIntroduction(map.get("courseIntro"));
+        lessonInfo.setStatus(0);
+        lessonInfo.setScore(5);
+        lessonInfo.setCreatorId(Integer.parseInt(map.get("creatorId")));
+        lessonInfo.setImgUrl(map.get("courseCover"));
+        lessonInfo.setCourseType(map.get("courseTag"));
+        lessonInfo.setSubscribeNum(0);
+        lessonInfo.setCreateAt(new Date());
+        boolean save = save(lessonInfo);
+        if (save){
+            return ApiResult.T();
+        } else {
+            return ApiResult.F("","添加失败");
+        }
     }
 }

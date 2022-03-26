@@ -14,5 +14,7 @@ public class LessonInfo {
     private Integer score;
     private Integer subscribeNum;
     private String courseIntroduction;
+    private String imgUrl;
+    private String courseType;
     private Integer fileRel;
 }
