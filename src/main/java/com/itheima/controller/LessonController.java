@@ -34,6 +34,11 @@ public class LessonController {
         return lessonService.addNewCourse(map);
     }
 
+    @PostMapping("/addNewChapter")
+    public ApiResult addNewChapter(@RequestBody Map<String, String> map){
+        return lessonService.addNewChapter(map);
+    }
+
     @PostMapping("/addNewSectionVideo")
     public ApiResult addNewSectionVideo(@RequestBody Map<String, String> map){
         return lessonService.addNewSectionVideo(map);

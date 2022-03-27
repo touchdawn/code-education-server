@@ -60,9 +60,11 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
 
         List<Object> chapterList = new ArrayList<>();
 
+        //获取父信息
         List<Map> courseChapterSectionInfo = lessonChapterSectionDao.getCourseChapterInfo(courseId);
         courseChapterSectionInfo.forEach(obj ->{
             Integer parentId = (Integer) obj.get("ID");
+            //获取子表
             List<Map> chapterChildInfo = lessonChapterSectionDao.getChapterChildInfo(parentId);
             obj.put("child",chapterChildInfo);
             chapterList.add(obj);
@@ -118,13 +120,32 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
             lessonChapterSection.setTitle(map.get("sectionName"));
             lessonChapterSection.setParentId(Integer.parseInt(map.get("parentId")));
             lessonChapterSection.setLessonRel(Integer.parseInt(map.get("courseId")));
-            lessonChapterSectionService.save(lessonChapterSection);
+            String sectionName = map.get("lessonVideo");
+        System.out.println(sectionName.substring(0,2));
+            if ((sectionName.substring(0,2)).equals("MD")){
+                lessonChapterSection.setType("MD");
+            } else if ((sectionName.substring(0,5)).equals("video")){
+                lessonChapterSection.setType("video");
+            }
+        System.out.println(lessonChapterSection);
+        lessonChapterSectionService.save(lessonChapterSection);
+
 //        } catch (Exception e) {
 //            return ApiResult.F("", String.valueOf(e));
 //        }
         return ApiResult.T();
     }
 
+    @Override
+    public ApiResult addNewChapter(Map<String, String> map) {
+        LessonChapterSection lessonChapterSection = new LessonChapterSection();
+        lessonChapterSection.setLessonRel(Integer.parseInt(map.get("courseId")));
+        lessonChapterSection.setCreateAt(new Date());
+        lessonChapterSection.setParentId(-1);
+        lessonChapterSection.setTitle(map.get("chapterName"));
+        lessonChapterSectionService.save(lessonChapterSection);
+        return ApiResult.T();
+    }
 
 
 //    public List addQiniuUrl(List<LessonInfo> listInput){
