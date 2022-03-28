@@ -13,4 +13,5 @@ public class UserComment {
     private Integer parentId;
     private Date createAt;
     private Integer votes;
+    private Integer deleteFlag;
 }

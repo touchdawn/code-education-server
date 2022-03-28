@@ -52,5 +52,19 @@ public class UserCommentServiceImpl extends ServiceImpl<UserCommentDao,UserComme
         return ApiResult.T(commentList);
     }
 
+    @Override
+    public ApiResult deleteComment(Integer commentId) {
+        UserComment userComment = userCommentDao.selectById(commentId);
+        if (userComment != null) {
+            userComment.setDeleteFlag(0);
+            userCommentDao.updateById(userComment);
+            if(userComment.getParentId() == -1){ //如果删的是父评论
+                userCommentDao.deleteChildByParentId(commentId);
+            }
+            return ApiResult.T();
+        }
+        return ApiResult.F("","找不到该评论！");
+    }
+
 
 }

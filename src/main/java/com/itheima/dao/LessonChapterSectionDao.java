@@ -15,6 +15,6 @@ public interface LessonChapterSectionDao extends BaseMapper<LessonChapterSection
     List<Map> getCourseChapterInfo(Integer courseId);
 
 //    @Select("select * from lesson_chapter_section lcs left join file_storage fs on fs.SECTION_REL = lcs.ID where lcs.PARENT_ID = #{parentId} and lcs.DELETE_FLAG = 0")
-@Select("select * from lesson_chapter_section lcs left join file_storage fs on lcs.FILE_REL = fs.ID where lcs.PARENT_ID = #{parentId} and lcs.DELETE_FLAG = 0")
+@Select("select * from lesson_chapter_section lcs left join file_storage fs on lcs.FILE_REL = fs.ID where lcs.PARENT_ID = #{parentId} and lcs.STATUS = 1")
 List<Map> getChapterChildInfo(Integer parentId);
 }

@@ -15,6 +15,7 @@ public class LessonChapterSection {
     private Integer parentId;
     private Integer order;
     private Integer deleteFlag;
+    private Integer status;
     private String type;
     private Date createAt;
 }

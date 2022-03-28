@@ -16,13 +16,17 @@ public class UserCommentController {
 
     @PostMapping("/addComment")
     public ApiResult addComment(@RequestBody Map<String, String> map){
-        userCommentService.addComment(map);
-        return ApiResult.F();
+        return userCommentService.addComment(map);
     }
 
     @GetMapping("/getComment/{courseId}")
     public ApiResult getComment(@PathVariable Integer courseId){
         return userCommentService.getCommentListByCourseId(courseId);
+    }
+
+    @GetMapping("/deleteComment/{commentId}")
+    public ApiResult deleteComment(@PathVariable Integer commentId){
+        return userCommentService.deleteComment(commentId);
     }
 
 }
