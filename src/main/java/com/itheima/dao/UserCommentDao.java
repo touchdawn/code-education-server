@@ -18,9 +18,9 @@ public interface UserCommentDao extends BaseMapper<UserComment> {
             "       user.NAME as \"userName\",\n" +
             "       user.AVATAR as \"avatar\",\n" +
 //            "       uc.CREATE_AT as \"createTime\",\n" +
-            "       uc.VOTES as votes,\n" +
-            "DATE_FORMAT(uc.CREATE_AT, '%m-%d %H:%i') As \"createTime\"," +
-            "       user.ID as userId\n" +
+//            "       uc.VOTES as \"votes\",\n" +
+            "       DATE_FORMAT(uc.CREATE_AT, '%m-%d %H:%i') As \"createTime\"," +
+            "       user.ID as \"userId\"\n" +
             "from user_comment uc left join user on uc.CREATOR_ID = user.ID " +
             "where COURSE_ID = #{courseId} and PARENT_ID = -1 and DELETE_FLAG = 1 " +
             "and user.STATUS = 1 order by CREATE_AT desc")
@@ -34,8 +34,8 @@ public interface UserCommentDao extends BaseMapper<UserComment> {
             "       user.AVATAR as \"avatar\",\n" +
 //            "       uc.CREATE_AT as \"createTime\",\n" +
             "DATE_FORMAT(uc.CREATE_AT, '%m-%d %H:%i') As \"createTime\"," +
-            "       uc.VOTES as votes,\n" +
-            "       user.ID as userId\n" +
+//            "       uc.VOTES as \"votes\",\n" +
+            "       user.ID as \"userId\"\n" +
             "from user_comment uc left join user on uc.CREATOR_ID = user.ID " +
             "where PARENT_ID = #{parentId} and DELETE_FLAG = 1 " +
             "and user.STATUS = 1 order by CREATE_AT desc")

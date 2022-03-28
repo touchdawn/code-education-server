@@ -19,9 +19,9 @@ public class UserCommentController {
         return userCommentService.addComment(map);
     }
 
-    @GetMapping("/getComment/{courseId}")
-    public ApiResult getComment(@PathVariable Integer courseId){
-        return userCommentService.getCommentListByCourseId(courseId);
+    @GetMapping("/getComment/{courseId}/{userId}")
+    public ApiResult getComment(@PathVariable Integer courseId, @PathVariable Integer userId){
+        return userCommentService.getCommentListByCourseId(courseId,userId);
     }
 
     @GetMapping("/deleteComment/{commentId}")

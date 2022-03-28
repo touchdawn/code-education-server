@@ -10,7 +10,7 @@ public interface UserCommentService extends IService<UserComment> {
 
     ApiResult addComment(Map<String, String> map);
 
-    ApiResult getCommentListByCourseId(Integer courseId);
+    ApiResult getCommentListByCourseId(Integer courseId, Integer userId);
 
     ApiResult deleteComment(Integer commentId);
 }
