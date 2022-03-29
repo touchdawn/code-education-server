@@ -1,5 +1,6 @@
 package com.itheima.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itheima.controller.utils.ApiResult;
 import com.itheima.dao.FileStorageDao;
@@ -147,7 +148,23 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
         return ApiResult.T();
     }
 
+    @Override
+    public ApiResult searchLesson(String lessonName) {
+        QueryWrapper<LessonInfo> queryWrapper = new QueryWrapper<LessonInfo>();
+//        queryWrapper.like("LESSON_NAME", "%node%");
+        String val = "%" + lessonName + "%";
+        queryWrapper.like("LESSON_NAME", val).eq("STATUS",1);
+        List<LessonInfo> lessonList = lessonInfoDao.selectList(queryWrapper);
+        return ApiResult.T(lessonList);
+    }
 
+//    public void findByLike() {
+//        QueryWrapper<LessonInfo> queryWrapper = new QueryWrapper<LessonInfo>();
+//        queryWrapper.like("name", "%乔%");
+//        List<LessonInfo> userList =
+//                lessonInfoDao.selectList(queryWrapper);
+//        System.out.println(userList);
+//    }
 //    public List addQiniuUrl(List<LessonInfo> listInput){
 //        listInput.forEach(item ->{
 //            item.getImgUrl(). = item.getImgUrl();

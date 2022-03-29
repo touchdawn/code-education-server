@@ -18,4 +18,8 @@ public interface LessonInfoDao extends BaseMapper<LessonInfo> {
 
     @Select("select * from lesson_info where CREATOR_ID=#{id} and STATUS = #{status} ORDER BY CREATE_AT desc ")
     List<LessonInfo> getAllByTeacherId(Integer id, Integer status);
+
+    @Select("select * from lesson_info where LESSON_NAME like % #{courseName} % and STATUS = 1")
+    List<LessonInfo> getLikeByCourseName(String courseName);
+
 }

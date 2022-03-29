@@ -19,6 +19,11 @@ public class LessonController {
         return lessonService.getAllLessons();
     }
 
+    @GetMapping("/searchLesson/{lessonName}")
+    public ApiResult searchLesson(@PathVariable String lessonName){
+        return lessonService.searchLesson(lessonName);
+    }
+
     @GetMapping("/getLessonByTeacherId/{id}")
     public ApiResult getLessonByTeacherId(@PathVariable Integer id){
         return lessonService.getLessonByTeacherId(id);
