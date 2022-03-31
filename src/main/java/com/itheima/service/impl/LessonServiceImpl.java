@@ -25,6 +25,9 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
     private UserDao userDao;
 
     @Autowired
+    private UserCommentDao userCommentDao;
+
+    @Autowired
     private FileStorageDao fileStorageDao;
 
     @Autowired
@@ -64,6 +67,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
         User teacher = userDao.selectById(courseMainInfo.getCreatorId());
         map.put("teacherAvatar",teacher.getAvatar());
         map.put("teacherName",teacher.getNickName());
+        map.put("teacherId",teacher.getId());
 
 
         String tsStr = "";
@@ -80,6 +84,10 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
             map.put("isFavourite",false);
             map.put("favouriteId","-1");
         }
+
+        //统计评论数量
+        Map totalComments = userCommentDao.countTotalComments(courseId);
+        map.put("totalComment",totalComments.get("count"));
 
         List<Object> chapterList = new ArrayList<>();
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class UserMessageServiceImpl extends ServiceImpl<UserMessageDao, UserMessage> implements UserMessageService {
@@ -55,11 +56,43 @@ public class UserMessageServiceImpl extends ServiceImpl<UserMessageDao, UserMess
     public ApiResult deleteMessage(Integer messageId) {
         UserMessage userMessage = userMessageDao.selectById(messageId);
         userMessage.setDeleteFlag(0);
+        userMessageDao.updateById(userMessage);
         return ApiResult.T();
     }
 
     @Override
+    public ApiResult postChangeMessage(Map<String, String> map) {
+        Integer messageId = Integer.parseInt(map.get("messageId"));
+        String method = map.get("method");
+        if (Objects.equals(method, "deleteByReceiver")) {
+            UserMessage userMessage = userMessageDao.selectById(messageId);
+            userMessage.setReceiverDeleteFlag(0);
+            userMessageDao.updateById(userMessage);
+            return ApiResult.T("接收者删除成功");
+        } else if (Objects.equals(method, "setRead")) {
+            UserMessage userMessage = userMessageDao.selectById(messageId);
+            userMessage.setIsRead(0);
+            userMessageDao.updateById(userMessage);
+            return ApiResult.T("设为已读成功");
+        } else if (Objects.equals(method, "deleteBySender")) {
+            UserMessage userMessage = userMessageDao.selectById(messageId);
+            userMessage.setDeleteFlag(0);
+            userMessageDao.updateById(userMessage);
+            return ApiResult.T("发送者删除成功");
+        } else if (Objects.equals(method, "deleteByAdmin")) {
+            userMessageDao.deleteById(messageId);
+            return ApiResult.T("物理删除成功");
+        }
+        return ApiResult.F("","删除失败");
+    }
+
+    @Override
     public ApiResult getMessageById(Integer messageId) {
+        UserMessage userMessage = userMessageDao.selectById(messageId);
+        if (userMessage.getIsRead() == 1){
+            userMessage.setIsRead(0);
+            userMessageDao.updateById(userMessage);
+        }
         return ApiResult.T(userMessageDao.getMessageById(messageId));
     }
 }

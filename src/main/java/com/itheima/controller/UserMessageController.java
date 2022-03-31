@@ -38,4 +38,9 @@ public class UserMessageController {
     public ApiResult deleteMessage(@PathVariable Integer messageId) {
         return userMessageService.deleteMessage(messageId);
     }
+
+    @PostMapping("/postChangeMessage")
+    public ApiResult postChangeMessage(@RequestBody Map<String, String> map) {
+        return userMessageService.postChangeMessage(map);
+    }
 }

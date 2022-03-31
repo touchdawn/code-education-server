@@ -26,6 +26,12 @@ public interface UserCommentDao extends BaseMapper<UserComment> {
             "and user.STATUS = 1 order by CREATE_AT desc")
     List<Map> getCommentListByCourseId(Integer courseId);
 
+    @Select("select count(1) as count\n" +
+            "from user_comment uc left join user on uc.CREATOR_ID = user.ID\n" +
+            "where COURSE_ID = #{courseId}  and DELETE_FLAG = 1 and user.STATUS = 1\n" +
+            "order by CREATE_AT desc")
+    Map countTotalComments(Integer courseId);
+
 //    @Select("select * from user_comment where PARENT_ID = #{parentId} and DELETE_FLAG = 1")
     @Select("select uc.ID as \"id\",\n" +
             "       uc.CONTENT as \"content\",\n" +

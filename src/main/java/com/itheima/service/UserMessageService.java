@@ -15,5 +15,7 @@ public interface UserMessageService extends IService<UserMessage> {
 
     ApiResult deleteMessage(Integer messageId);
 
+    ApiResult postChangeMessage(Map<String, String> map);
+
     ApiResult getMessageById(Integer messageId);
 }
