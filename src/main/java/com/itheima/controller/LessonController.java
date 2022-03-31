@@ -29,9 +29,9 @@ public class LessonController {
         return lessonService.getLessonByTeacherId(id);
     }
 
-    @GetMapping("/getCourseInfo/{courseId}")
-    public ApiResult getCourseInfo(@PathVariable Integer courseId){
-        return lessonService.getCourseInfo(courseId);
+    @GetMapping("/getCourseInfo/{courseId}/{userId}")
+    public ApiResult getCourseInfo(@PathVariable Integer courseId, @PathVariable Integer userId){
+        return lessonService.getCourseInfo(courseId,userId);
     }
 
     @PostMapping("/addNewCourse")

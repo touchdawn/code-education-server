@@ -10,7 +10,7 @@ import java.util.Map;
 public interface CourseCommentVoteService extends IService<CourseCommentVote> {
 
 
-    Integer getVoteNumberByCommentId(Integer courseId);
+    Integer getVoteNumberByCommentId(Integer commentId);
 
     ApiResult addVote(Map<String, String> map);
 }

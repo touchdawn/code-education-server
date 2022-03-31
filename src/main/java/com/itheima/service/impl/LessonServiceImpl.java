@@ -3,19 +3,16 @@ package com.itheima.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itheima.controller.utils.ApiResult;
-import com.itheima.dao.FileStorageDao;
-import com.itheima.dao.ImgStorageDao;
-import com.itheima.dao.LessonChapterSectionDao;
-import com.itheima.dao.LessonInfoDao;
-import com.itheima.domain.FileStorage;
-import com.itheima.domain.LessonChapterSection;
-import com.itheima.domain.LessonInfo;
+import com.itheima.dao.*;
+import com.itheima.domain.*;
 import com.itheima.service.FileStorageService;
 import com.itheima.service.LessonChapterSectionService;
 import com.itheima.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -23,6 +20,9 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
 
     @Autowired
     private LessonInfoDao lessonInfoDao;
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     private FileStorageDao fileStorageDao;
@@ -36,6 +36,9 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
     @Autowired
     private LessonChapterSectionDao  lessonChapterSectionDao;
 
+    @Autowired
+    private UserFavouriteDao userFavouriteDao;
+
     @Override
     public Boolean testT(Integer testInt){
         return false;
@@ -48,7 +51,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
     }
 
     @Override
-    public ApiResult getCourseInfo(Integer courseId){
+    public ApiResult getCourseInfo(Integer courseId, Integer userId){
 //        ImgStorage courseImgInfo = imgStorageDao.findByCourseId(courseId);
         Map<String,Object> map = new HashMap<>();
 //        map.put("imgUrl",courseImgInfo.getImgUrl());
@@ -58,6 +61,25 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
         map.put("score",courseMainInfo.getScore().toString());
         map.put("imgUrl",courseMainInfo.getImgUrl());
         map.put("courseType",courseMainInfo.getCourseType());
+        User teacher = userDao.selectById(courseMainInfo.getCreatorId());
+        map.put("teacherAvatar",teacher.getAvatar());
+        map.put("teacherName",teacher.getNickName());
+
+
+        String tsStr = "";
+        DateFormat sdf = new SimpleDateFormat("MM-dd HH:mm");
+        tsStr = sdf.format(courseMainInfo.getCreateAt());
+
+        map.put("createTime",tsStr);
+
+        UserFavourite userFavourite = userFavouriteDao.findFavouriteRecordByUserIdAndCourseId(userId,courseId);
+        if (userFavourite != null){
+            map.put("isFavourite",true);
+            map.put("favouriteId",userFavourite.getId());
+        } else {
+            map.put("isFavourite",false);
+            map.put("favouriteId","-1");
+        }
 
         List<Object> chapterList = new ArrayList<>();
 
@@ -72,6 +94,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
         });
 
         map.put("chapter",chapterList);
+        map.put("favNum",userFavouriteDao.getFavNumberByCourseId(courseId));
         return ApiResult.T(map);
     }
 

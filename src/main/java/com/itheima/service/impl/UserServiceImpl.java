@@ -100,6 +100,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
             user.setToken("");
             user.setEmail(email);
             user.setName(name);
+            user.setNickName(name);
             user.setPhone(phone);
             user.setPassword(password);
             user.setCreatedAt(new Date());
