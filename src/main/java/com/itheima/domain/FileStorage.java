@@ -14,5 +14,5 @@ public class FileStorage {
     private String sourceName;
     private Integer lessonRel;
     private Integer sectionRel;
-    private Integer order;
+    private Integer displayOrder;
 }

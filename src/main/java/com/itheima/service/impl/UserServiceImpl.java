@@ -106,6 +106,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
             user.setCreatedAt(new Date());
             user.setUpdatedAt(new Date());
             user.setAvatar("default%20avatar.png");
+            user.setType(0);
             save(user);
             //添加token
             user.setToken(JwtUtil.createToken(user));

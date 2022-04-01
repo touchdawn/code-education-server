@@ -48,4 +48,9 @@ public class LessonController {
     public ApiResult addNewSectionVideo(@RequestBody Map<String, String> map){
         return lessonService.addNewSectionVideo(map);
     }
+
+    @GetMapping("/deleteSection/{sectionId}")
+    public ApiResult deleteSection(@PathVariable Integer sectionId) {
+        return lessonService.deleteSection(sectionId);
+    }
 }

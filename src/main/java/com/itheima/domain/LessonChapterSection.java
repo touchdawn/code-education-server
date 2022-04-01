@@ -13,7 +13,7 @@ public class LessonChapterSection {
     private String title;
     private Integer fileRel;
     private Integer parentId;
-    private Integer order;
+    private Integer displayOrder;
     private Integer deleteFlag;
     private Integer status;
     private String type;

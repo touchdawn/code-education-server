@@ -22,4 +22,6 @@ public interface LessonService extends IService<LessonInfo> {
     ApiResult addNewChapter(Map<String, String> map);
 
     ApiResult searchLesson(String lessonName);
+
+    ApiResult deleteSection(Integer sectionId);
 }

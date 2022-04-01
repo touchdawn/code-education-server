@@ -189,6 +189,20 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
         return ApiResult.T(lessonList);
     }
 
+    @Override
+    public ApiResult deleteSection(Integer sectionId) {
+        LessonChapterSection lessonChapterSection = lessonChapterSectionDao.selectById(sectionId);
+        lessonChapterSection.setDeleteFlag(0);
+        lessonChapterSectionDao.updateById(lessonChapterSection);
+        if (lessonChapterSection.getParentId() != -1) {
+            return ApiResult.T("删除section成功");
+        } else {
+            //删除的是chapter
+            lessonChapterSectionDao.deleteChild(sectionId);
+            return  ApiResult.T("删除chapter成功");
+        }
+    }
+
 //    public void findByLike() {
 //        QueryWrapper<LessonInfo> queryWrapper = new QueryWrapper<LessonInfo>();
 //        queryWrapper.like("name", "%乔%");
