@@ -11,7 +11,7 @@ public interface LessonService extends IService<LessonInfo> {
 
     ApiResult getAllLessons();
 
-    ApiResult getCourseInfo(Integer courseId, Integer userId);
+    ApiResult getCourseInfo(Integer courseId, Integer userId, String type);
 
     ApiResult addNewCourse(Map<String, String> map);
 
@@ -24,4 +24,6 @@ public interface LessonService extends IService<LessonInfo> {
     ApiResult searchLesson(String lessonName);
 
     ApiResult deleteSection(Integer sectionId);
+
+    ApiResult getRandLessons(Integer lessonNumber);
 }

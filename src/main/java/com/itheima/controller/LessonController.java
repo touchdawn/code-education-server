@@ -19,6 +19,11 @@ public class LessonController {
         return lessonService.getAllLessons();
     }
 
+    @GetMapping("/getRandLessons/{lessonNumber}")
+    public ApiResult getRandLessons(@PathVariable Integer lessonNumber){
+        return lessonService.getRandLessons(lessonNumber);
+    }
+
     @GetMapping("/searchLesson/{lessonName}")
     public ApiResult searchLesson(@PathVariable String lessonName){
         return lessonService.searchLesson(lessonName);
@@ -31,7 +36,12 @@ public class LessonController {
 
     @GetMapping("/getCourseInfo/{courseId}/{userId}")
     public ApiResult getCourseInfo(@PathVariable Integer courseId, @PathVariable Integer userId){
-        return lessonService.getCourseInfo(courseId,userId);
+        return lessonService.getCourseInfo(courseId,userId,"available");
+    }
+
+    @GetMapping("/getCourseAllInfo/{courseId}/{userId}")
+    public ApiResult getCourseAllInfo(@PathVariable Integer courseId, @PathVariable Integer userId){
+        return lessonService.getCourseInfo(courseId,userId,"all");
     }
 
     @PostMapping("/addNewCourse")

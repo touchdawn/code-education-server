@@ -54,7 +54,13 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
     }
 
     @Override
-    public ApiResult getCourseInfo(Integer courseId, Integer userId){
+    public ApiResult getRandLessons(Integer lessonNumber) {
+        List<Map<String,String>> randLessons = lessonInfoDao.getRandLessons(lessonNumber);
+        return ApiResult.T(randLessons);
+    }
+
+    @Override
+    public ApiResult getCourseInfo(Integer courseId, Integer userId, String type){
 //        ImgStorage courseImgInfo = imgStorageDao.findByCourseId(courseId);
         Map<String,Object> map = new HashMap<>();
 //        map.put("imgUrl",courseImgInfo.getImgUrl());
@@ -96,8 +102,13 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
         courseChapterSectionInfo.forEach(obj ->{
             Integer parentId = (Integer) obj.get("ID");
             //获取子表
-            List<Map> chapterChildInfo = lessonChapterSectionDao.getChapterChildInfo(parentId);
-            obj.put("child",chapterChildInfo);
+            if (Objects.equals(type, "all")) {
+                List<Map> chapterChildInfo = lessonChapterSectionDao.getChapterChildInfoAll(parentId);
+                obj.put("child",chapterChildInfo);
+            } else {
+                List<Map> chapterChildInfo = lessonChapterSectionDao.getChapterChildInfo(parentId);
+                obj.put("child",chapterChildInfo);
+            }
             chapterList.add(obj);
         });
 
