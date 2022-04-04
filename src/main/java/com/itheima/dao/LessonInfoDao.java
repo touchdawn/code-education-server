@@ -29,8 +29,8 @@ public interface LessonInfoDao extends BaseMapper<LessonInfo> {
             "       COURSE_INTRODUCTION as courseIntroduction, \n" +
             "       CREATE_AT AS createAt, \n" +
             "       IMG_URL AS imgUrl \n" +
-            "       from lesson_info  where STATUS = 1 \n" +
-            "       order by rand() LIMIT #{lessonNumber}")
+            "       from lesson_info where STATUS = 1 \n" +
+            "       order by SCORE desc, rand() LIMIT #{lessonNumber}")
     List<Map<String,String>> getRandLessons(Integer lessonNumber);
 
     @Select("select * from lesson_info where CREATOR_ID=#{id} and STATUS = #{status} ORDER BY CREATE_AT desc ")

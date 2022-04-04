@@ -70,6 +70,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
         map.put("score",courseMainInfo.getScore().toString());
         map.put("imgUrl",courseMainInfo.getImgUrl());
         map.put("courseType",courseMainInfo.getCourseType());
+        map.put("courseName",courseMainInfo.getLessonName());
         User teacher = userDao.selectById(courseMainInfo.getCreatorId());
         map.put("teacherAvatar",teacher.getAvatar());
         map.put("teacherName",teacher.getNickName());
@@ -123,7 +124,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
         lessonInfo.setLessonName(map.get("courseName"));
         lessonInfo.setCourseIntroduction(map.get("courseIntro"));
         lessonInfo.setStatus(0);
-        lessonInfo.setScore(5);
+        lessonInfo.setScore(0);
         lessonInfo.setCreatorId(Integer.parseInt(map.get("creatorId")));
         lessonInfo.setImgUrl(map.get("courseCover"));
         lessonInfo.setCourseType(map.get("courseTag"));

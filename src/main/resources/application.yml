@@ -14,7 +14,8 @@ spring:
     host: smtp.qq.com
     default-encoding: UTF-8
   redis:
-    host: touchdawn.asuscomm.com
+#    host: touchdawn.asuscomm.com
+    host: localhost
 
 mybatis-plus:
   global-config:
