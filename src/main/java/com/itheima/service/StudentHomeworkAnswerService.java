@@ -9,6 +9,9 @@ public interface StudentHomeworkAnswerService extends IService<StudentHomeworkAn
 
     ApiResult addStudentHomeworkAnswer(StudentHomeworkAnswer studentHomeworkAnswer);
 
+    ApiResult setStudentDone(Integer homeworkId, Integer studentId);
+
+    ApiResult getStudentAnswer(Integer hwId, Integer userId);
 }
 
 

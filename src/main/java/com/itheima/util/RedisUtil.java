@@ -268,7 +268,7 @@ public final class RedisUtil {
         return redisTemplate.opsForHash().increment(key,item,-by);
     }
 
-    //===============set
+    //===============set==============
     /**
      * 根据key获取set中的所有值
      * @param key
@@ -282,4 +282,85 @@ public final class RedisUtil {
             return null;
         }
     }
+
+    /**
+     * 根据value从一个set中查询是否存在
+     * @param key
+     * @param value
+     * @return true false
+     */
+    public boolean sHasKey(String key,Object value) {
+        try {
+            return redisTemplate.opsForSet().isMember(key,value);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 将数据写入set缓存
+     * @param key
+     * @param values 可以多个
+     * @return 成功个数
+     */
+    public long sSet(String key,Object... values) {
+        try {
+            return redisTemplate.opsForSet().add(key,values);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * 将数据写入set缓存
+     * @param key
+     * @param values 可以多个
+     * @param time 时间
+     * @return 成功个数
+     */
+    public long sSetAndTime(String key,Long time, Object... values) {
+        try {
+
+            Long count = redisTemplate.opsForSet().add(key,values);
+            if (time>0){
+                expire(key,time);
+            }
+            return count;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * 获取set缓存的长度
+     * @param key 键
+     */
+    public long sGetSetSize(String key){
+        try {
+            return redisTemplate.opsForSet().size(key);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+    /**
+     * 移除值为value的
+     * @param key 键
+     * @param values 值 可多个
+     */
+    public long sGetSetSize(String key, Object... values){
+        try {
+            Long count = redisTemplate.opsForSet().remove(key, values);
+            return count;
+        }catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    //==============list=======================
+
 }

@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -71,9 +73,20 @@ public class CourseHomeworkServiceImpl extends ServiceImpl<CourseHomeworkDao, Co
     }
 
     @Override
-    public ApiResult getHomeworkByCourseId(Integer courseId) {
-
-        return ApiResult.T(courseHomeworkDao.getByCourseId(courseId));
+    public ApiResult getHomeworkByCourseId(Integer courseId, Integer userId) {
+        List<Map> byCourseId = courseHomeworkDao.getByCourseId(courseId);
+        byCourseId.forEach(map -> {
+//            String id = map.get("id");
+            int homeworkId =(Integer) map.get("id");
+            StudentHomeworkAnswer byHwIdAndUserId = studentHomeworkAnswerDao.getByHwIdAndUserId(homeworkId, userId);
+            if (byHwIdAndUserId != null){
+                map.put("doneFlag","1");
+                map.put("doneTime", byHwIdAndUserId.getCreateAt().getTime());
+            } else {
+                map.put("doneFlag","0");
+            }
+        });
+        return ApiResult.T(byCourseId);
     }
 
     @Override

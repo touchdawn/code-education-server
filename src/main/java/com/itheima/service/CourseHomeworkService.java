@@ -11,7 +11,7 @@ public interface CourseHomeworkService extends IService<CourseHomework> {
 
     ApiResult getHomeworkByHwId(Integer hwId);
 
-    ApiResult getHomeworkByCourseId(Integer courseId);
+    ApiResult getHomeworkByCourseId(Integer courseId, Integer userId);
 
     ApiResult checkAuthority(Integer courseId,Integer userID);
 }

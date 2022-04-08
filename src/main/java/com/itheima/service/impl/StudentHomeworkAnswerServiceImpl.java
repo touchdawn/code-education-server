@@ -11,6 +11,7 @@ import com.itheima.domain.StudentHomeworkAnswer;
 import com.itheima.domain.StudentHomeworkResult;
 import com.itheima.service.StudentHomeworkAnswerService;
 import com.itheima.service.StudentHomeworkResultService;
+import com.itheima.util.RedisUtil;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,13 @@ public class StudentHomeworkAnswerServiceImpl extends ServiceImpl<StudentHomewor
     StudentHomeworkResultDao studentHomeworkResultDao;
 
     @Autowired
+    StudentHomeworkAnswerDao studentHomeworkAnswerDao;
+
+    @Autowired
     StudentHomeworkResultService studentHomeworkResultService;
+
+    @Autowired
+    RedisUtil redisUtil;
 
     @Override
     public ApiResult addStudentHomeworkAnswer(StudentHomeworkAnswer studentHomeworkAnswer) {
@@ -38,11 +45,15 @@ public class StudentHomeworkAnswerServiceImpl extends ServiceImpl<StudentHomewor
         studentHomeworkAnswer.setDeleteFlag(1);
         save(studentHomeworkAnswer);
 
-        CourseHomework courseHomework = courseHomeworkDao.selectById(studentHomeworkAnswer.getHomeworkRel());
+        Integer returnId = studentHomeworkAnswer.getHomeworkRel();
+
+        CourseHomework courseHomework = courseHomeworkDao.selectById(returnId);
         JSONArray jsonArray = JSONArray.fromObject(courseHomework.getAnswer());// 正确答案
+
         JSONArray studentArray = JSONArray.fromObject(studentHomeworkAnswer.getAnswer());
 
-        List<StudentHomeworkResult> homeworkResult = studentHomeworkResultDao.getHomeworkResult(studentHomeworkAnswer.getHomeworkRel());
+        //准备刷新统计数据
+        List<StudentHomeworkResult> homeworkResult = studentHomeworkResultDao.getHomeworkResult(returnId);
 
         AtomicInteger count= new AtomicInteger();
         count.set(0);
@@ -84,5 +95,21 @@ public class StudentHomeworkAnswerServiceImpl extends ServiceImpl<StudentHomewor
         });
 
         return ApiResult.T();
+    }
+
+    @Override
+    public ApiResult setStudentDone(Integer homeworkId, Integer studentId) {
+//        HomeworkDoneDomain homeworkDoneDomain = new HomeworkDoneDomain(homeworkId,studentId);
+        redisUtil.sSet(homeworkId.toString(),studentId);
+//        System.out.println(redisUtil.get(homeworkId.toString()));
+        return ApiResult.T(redisUtil.sHasKey(homeworkId.toString(),studentId));
+//        return ApiResult.T(redisUtil.get(homeworkId.toString()));
+    }
+
+    @Override
+    public ApiResult getStudentAnswer(Integer hwId, Integer userId) {
+        StudentHomeworkAnswer byHwIdAndUserId = studentHomeworkAnswerDao.getByHwIdAndUserId(hwId, userId);
+        JSONArray jsonArray = JSONArray.fromObject(byHwIdAndUserId.getAnswer());
+        return ApiResult.T(jsonArray);
     }
 }
