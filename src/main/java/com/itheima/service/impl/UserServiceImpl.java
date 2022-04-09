@@ -160,4 +160,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
             return ApiResult.F("","密码不正确");
         }
     }
+
+    @Override
+    public ApiResult getAllByPage(Map<String, String> map) {
+        int current = parseInt(map.get("current"));
+        int size = parseInt(map.get("size"));
+        IPage page = new Page(current,size);
+        IPage iPage = userDao.selectPage(page, null);
+        return ApiResult.T(iPage);
+    }
 }

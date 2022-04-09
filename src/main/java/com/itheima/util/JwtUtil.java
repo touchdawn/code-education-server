@@ -16,7 +16,8 @@ public class JwtUtil {
                 .setHeaderParam("typ", "JWT")
                 .setHeaderParam("alg","HS256")
                 //payload
-                .claim("userPhone",user.getPhone())
+//                .claim("userPhone",user.getPhone())
+                .claim("userEmail",user.getEmail())
                 .claim("role",user.getType())
                 .setSubject("admin-test")
                 .setExpiration(new Date(System.currentTimeMillis() +time))

@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 public class UserDaoTestCase {
@@ -81,5 +83,14 @@ public class UserDaoTestCase {
         //}
         lqw.like(name != null,User::getName,name);
         userDao.selectList(lqw);
+    }
+
+    @Test
+    void selectByMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", 1);
+        map.put("name", "管理员");
+        List<User> users = userDao.selectByMap(map);
+        users.forEach(System.out::println);
     }
 }

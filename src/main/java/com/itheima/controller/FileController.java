@@ -18,7 +18,7 @@ public class FileController {
     public ApiResult getToken(){
         String accessKey = "lBWb8CP90dSUR-ljomttFgKaJZYntGMCEKk8Oqt2";
         String secretKey = "Kbkff9JOeQr5ZtnGelmGiv2ARLjlkjA5_2_F34A8";
-        String bucket = "test-20220313";
+        String bucket = "code-education-1";
         Auth auth = Auth.create(accessKey, secretKey);
         String upToken = auth.uploadToken(bucket);
         return ApiResult.T(upToken);

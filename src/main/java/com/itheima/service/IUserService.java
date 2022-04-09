@@ -48,4 +48,6 @@ public interface IUserService extends IService<User> {
     ApiResult updateUserById(User user);
 
     ApiResult changePassword(Map map);
+
+    ApiResult getAllByPage(Map<String,String> map);
 }
