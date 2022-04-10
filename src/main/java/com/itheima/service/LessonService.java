@@ -26,4 +26,28 @@ public interface LessonService extends IService<LessonInfo> {
     ApiResult deleteSection(Integer sectionId);
 
     ApiResult getRandLessons(Integer lessonNumber);
+
+    ApiResult addCourseLike(Integer courseId, Integer userId);
+
+    ApiResult cancelCourseLike(Integer courseId, Integer userId);
+
+    Boolean findCourseLike(Integer courseId, Integer userId);
+
+    ApiResult addCourseDislike(Integer courseId, Integer userId);
+
+    ApiResult cancelCourseDislike(Integer courseId, Integer userId);
+
+    Boolean findCourseDislike(Integer courseId, Integer userId);
+
+    Long getCourseLikeNum(Integer courseId);
+
+    ApiResult addCourseSubscribe(Integer courseId, Integer userId);
+
+    ApiResult cancelCourseSubscribe(Integer courseId, Integer userId);
+
+    ApiResult getCourseSubscribeNum(Integer courseId);
+
+    Boolean findCourseSubscribe(Integer courseId, Integer userId);
+
+    ApiResult getSubCourseByUserId(Integer userId);
 }

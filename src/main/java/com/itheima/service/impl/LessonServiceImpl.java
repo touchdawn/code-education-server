@@ -8,12 +8,15 @@ import com.itheima.domain.*;
 import com.itheima.service.FileStorageService;
 import com.itheima.service.LessonChapterSectionService;
 import com.itheima.service.LessonService;
+import com.itheima.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static java.util.Arrays.asList;
 
 @Service
 public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> implements LessonService {
@@ -41,6 +44,9 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
 
     @Autowired
     private UserFavouriteDao userFavouriteDao;
+
+    @Autowired
+    RedisUtil redisUtil;
 
     @Override
     public Boolean testT(Integer testInt){
@@ -90,6 +96,24 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
         } else {
             map.put("isFavourite",false);
             map.put("favouriteId","-1");
+        }
+
+        if(findCourseLike(courseId,userId)) {
+            map.put("isLike",true);
+            map.put("isDislike",false);
+        } else if (findCourseDislike(courseId,userId)) {
+            map.put("isDislike",true);
+            map.put("isLike",false);
+        } else {
+            map.put("isDislike",false);
+            map.put("isLike",false);
+        }
+
+        map.put("likeNum",getCourseLikeNum(courseId));
+        if (findCourseSubscribe(courseId,userId)) {
+            map.put("isSubscribe",true);
+        } else {
+            map.put("isSubscribe",false);
         }
 
         //统计评论数量
@@ -214,6 +238,83 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
             return  ApiResult.T("删除chapter成功");
         }
     }
+
+    @Override
+    public ApiResult addCourseLike(Integer courseId, Integer userId) {
+        redisUtil.sAdd(courseId + "Like" , userId.toString());
+        redisUtil.sRemove(courseId+ "Dislike",userId.toString());
+//        return ApiResult.T(redisUtil.sIsMember(courseId + "Like",String.valueOf(userId)));
+        return ApiResult.T(redisUtil.sHasKey(courseId + "Like",userId));
+    }
+
+    @Override
+    public ApiResult cancelCourseLike(Integer courseId, Integer userId) {
+        return ApiResult.T(redisUtil.sRemove(courseId+ "Like",userId.toString()));
+    }
+
+    @Override
+    public Boolean findCourseLike(Integer courseId, Integer userId){
+        return redisUtil.sHasKey(courseId + "Like",userId);
+    }
+
+    @Override
+    public ApiResult addCourseDislike(Integer courseId, Integer userId) {
+        redisUtil.sAdd(courseId + "Dislike" , userId.toString());
+        redisUtil.sRemove(courseId+ "Like",userId.toString());
+        return ApiResult.T(redisUtil.sHasKey(courseId + "Dislike",userId));
+    }
+
+    @Override
+    public ApiResult cancelCourseDislike(Integer courseId, Integer userId) {
+        return ApiResult.T(redisUtil.sRemove(courseId+ "Dislike",userId.toString()));
+    }
+
+    @Override
+    public Boolean findCourseDislike(Integer courseId, Integer userId){
+        return redisUtil.sHasKey(courseId + "Dislike",userId);
+    }
+
+    @Override
+    public Long getCourseLikeNum(Integer courseId) {
+        return redisUtil.sSize(courseId + "Like");
+    }
+
+    @Override
+    public ApiResult addCourseSubscribe(Integer courseId, Integer userId) {
+        redisUtil.sAdd(courseId + "Subscribe" , userId.toString());
+        redisUtil.sAdd("User" + userId, courseId.toString());
+        return ApiResult.T(redisUtil.sHasKey(courseId + "Subscribe",userId));
+    }
+
+    @Override
+    public ApiResult cancelCourseSubscribe(Integer courseId, Integer userId) {
+        redisUtil.sRemove("User" + userId, courseId.toString());
+        return ApiResult.T(redisUtil.sRemove(courseId+ "Subscribe",userId.toString()));
+    }
+
+    @Override
+    public ApiResult getCourseSubscribeNum(Integer courseId) {
+        return ApiResult.T(redisUtil.sSize(courseId + "Subscribe"));
+    }
+
+    @Override
+    public Boolean findCourseSubscribe(Integer courseId, Integer userId) {
+        return redisUtil.sHasKey(courseId + "Subscribe",userId);
+    }
+
+    @Override
+    public ApiResult getSubCourseByUserId(Integer userId) {
+        Set<String> strings = redisUtil.setMembers("User" + userId);
+
+        Iterator i = strings.iterator();
+        List list=new ArrayList();
+        while (i.hasNext()){
+        LessonInfo lessonInfo = lessonInfoDao.selectById(Integer.parseInt(i.next().toString()));
+            list.add(lessonInfo);
+        }
+        return ApiResult.T(list);
+    }
+
 
 //    public void findByLike() {
 //        QueryWrapper<LessonInfo> queryWrapper = new QueryWrapper<LessonInfo>();

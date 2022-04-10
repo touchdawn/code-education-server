@@ -100,10 +100,11 @@ public class StudentHomeworkAnswerServiceImpl extends ServiceImpl<StudentHomewor
     @Override
     public ApiResult setStudentDone(Integer homeworkId, Integer studentId) {
 //        HomeworkDoneDomain homeworkDoneDomain = new HomeworkDoneDomain(homeworkId,studentId);
-        redisUtil.sSet(homeworkId.toString(),studentId);
+//        redisUtil.sSet(homeworkId.toString(),studentId);
 //        System.out.println(redisUtil.get(homeworkId.toString()));
-        return ApiResult.T(redisUtil.sHasKey(homeworkId.toString(),studentId));
+//        return ApiResult.T(redisUtil.sHasKey(homeworkId.toString(),studentId));
 //        return ApiResult.T(redisUtil.get(homeworkId.toString()));
+        return null;
     }
 
     @Override
