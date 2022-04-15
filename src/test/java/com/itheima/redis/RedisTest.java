@@ -2,6 +2,7 @@ package com.itheima.redis;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.itheima.controller.utils.ApiResult;
 import com.itheima.domain.RedisTestDomain;
 import com.itheima.util.RedisUtil;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
+
+import java.util.Date;
 
 @SpringBootTest
 class RedisTest {
@@ -46,5 +49,12 @@ class RedisTest {
     public void  utilTest(){
         redisUtil.set("name","myname");
         System.out.println(redisUtil.get("name"));
+    }
+
+    @Test
+    public void dateTest(){
+        System.out.println(new Date().getTime());
+        System.out.println((double)new Date().getTime());
+//        return ApiResult.T(new Date());
     }
 }

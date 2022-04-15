@@ -60,6 +60,49 @@ public class tokenTest {
         String upToken = auth.uploadToken(bucket);
         System.out.println(upToken);
     }
+    @Test
+    public void aaa(){
+        String accessKey = "SELECT  t.ID                                                                                                                      as \"id\",\n" +
+                "                                   t.SUB_PROJECT_ID                                                                               as \"subProjectId\",\n" +
+                "                                   t.PARENT_ID                                                                                    as \"parentId\",\n" +
+                "                                   t.TASK_TITLE                                                                                   as \"taskTitle\",\n" +
+                "                                   t.TASK_TITLE                                                                                   as \"label\",\n" +
+                "                                   PRODUCT_LINE_GROUP.PRODUCT_LINE_CODE                                                           as \"productLineCode\",\n" +
+                "                                   PRODUCT_LINE_GROUP.GROUP_NAME                                                                  as \"groupName\",\n" +
+                "                                   PM_PROJECT_TASK.TASK_TITLE                                                                     as \"strategyTitle\",\n" +
+                "                                   t.TASK_DETAIL                                                                                  as \"taskDetail\",\n" +
+                "                                   t.STATUS                                                                                       as \"status\",\n" +
+                "                                   t.PRIORITY                                                                                     as \"priority\",\n" +
+                "                                   t.RISK_LEVEL                                                                                   as \"riskLevel\",\n" +
+                "                                   t.RISK_REASON                                                                                  as \"riskReason\",\n" +
+                "                                   t.CREATE_EMPLOYEE                                                                              as \"createEmployeeId\",\n" +
+                "                                   t.ORDER_NUM                                                                                    as \"orderNum\",\n" +
+                "                                   t.HAS_DEFECT                                                                                   as \"hasDefect\",\n" +
+                "                                   t.CAN_SELECT                                                                                   as \"canSelect\",\n" +
+                "                                   t.EMPLOYEE_AUTH                                                                                as \"employeeAuth\",\n" +
+                "                                   t.DEPT_PRJ_CODE                                                                                as \"deptPrjCode\",\n" +
+                "                                   TO_CHAR(t.START_TIME, 'YYYY-MM-DD')                                                            as \"startTime\",\n" +
+                "                                   TO_CHAR(t.END_TIME, 'YYYY-MM-DD')                                                              as \"endTime\",\n" +
+                "                                   TO_CHAR(t.REAL_START_TIME, 'YYYY-MM-DD')                                                       as \"realStartTime\",\n" +
+                "                                   TO_CHAR(t.REAL_END_TIME, 'YYYY-MM-DD')                                                         as \"realEndTime\",\n" +
+                "                                   (select v1.EMPLOYEE_NAME from CA_EMPLOYEE v1 where v1.ID = t.CREATE_EMPLOYEE)                  as \"createEmployeeName\",\n" +
+                "                                   (select count(1) from PM_SUB_PROJECT_TASK v2 where v2.PARENT_ID = t.ID)                        as \"childrenNum\",\n" +
+                "                                   (select count(1) from PM_SUB_PROJECT_TASK_LINK v3 where v3.TASK_ID = t.ID)                     as \"employeeNum\",\n" +
+                "                                   (select to_char(wm_concat(v4.EMPLOYEE_ID)) from PM_SUB_PROJECT_TASK_LINK v4 where v4.TASK_ID = t.ID) as \"employeeIds\",\n" +
+                "                                   (select to_char(wm_concat(v6.EMPLOYEE_NAME)) from PM_SUB_PROJECT_TASK_LINK v5\n" +
+                "                                   join CA_EMPLOYEE v6 on v5.EMPLOYEE_ID = v6.ID where v5.TASK_ID = t.ID)                         as \"employeeList\",\n" +
+                "                                   (select to_char(wm_concat(v8.TYPE_NAME)) from PM_SUB_PROJECT_TASK_TYPE_LINK v7\n" +
+                "                                   join PM_SUB_PROJECT_TASK_TYPE v8 on v7.TYPE_ID = v8.ID where v7.TASK_ID = t.ID)                as \"taskType\",\n" +
+                "                                   t.TASK_LOAD_TYPE                                                                               as \"taskLoadType\",\n" +
+                "                                   t.NESMA_TASK_LOAD                                                                              as \"totalLoad\",\n" +
+                "                                   (select sum(WORK_LOAD) from TASK_WORKITEM_LINK link where link.TASK_ID = t.ID GROUP BY link.TASK_ID)   as \"taskLoad\"\n" +
+                "                FROM PM_SUB_PROJECT_TASK t\n" +
+                "                    left join PM_PROJECT_TASK on PM_PROJECT_TASK.ID = t.PROJECT_TASK_ID\n" +
+                "                    left join PRODUCT_LINE_GROUP on PRODUCT_LINE_GROUP.ID = PM_PROJECT_TASK.PRODUCT_LINE_GROUP\n" +
+                "                where t.SUB_PROJECT_ID = ?1 and DEFECT_FLAG = 0 \n"+
+                "                order by t.ORDER_NUM ";
+        System.out.println(accessKey);
+    }
 
 
 }

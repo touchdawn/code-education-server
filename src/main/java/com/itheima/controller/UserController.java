@@ -80,7 +80,7 @@ public class UserController {
         return ApiResult.T(userService.save(user));
     }
 
-    @PutMapping
+    @PostMapping("/update")
     public ApiResult update(@RequestBody User user){
         return ApiResult.T(userService.updateById(user));
     }

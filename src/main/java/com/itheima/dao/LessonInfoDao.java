@@ -1,6 +1,7 @@
 package com.itheima.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itheima.domain.LessonInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -39,4 +40,20 @@ public interface LessonInfoDao extends BaseMapper<LessonInfo> {
     @Select("select * from lesson_info where LESSON_NAME like % #{courseName} % and STATUS = 1")
     List<LessonInfo> getLikeByCourseName(String courseName);
 
+    @Select("select lesson_info.ID AS id,\n" +
+            "       lesson_info.LESSON_NAME AS lessonName,\n" +
+            "       lesson_info.STATUS AS status,\n" +
+            "       lesson_info.COURSE_TYPE AS courseType,\n" +
+            "       lesson_info.SUBSCRIBE_NUM AS subscribeNum,\n" +
+            "       lesson_info.SCORE AS score,\n" +
+            "       lesson_info.CREATOR_ID AS creatorId,\n" +
+            "       user.NAME AS creatorName,\n" +
+            "       user.PHONE AS creatorPhone,\n" +
+            "       user.EMAIL AS creatorEmail,\n" +
+            "       lesson_info.COURSE_INTRODUCTION as courseIntroduction, \n" +
+            "       lesson_info.CREATE_AT AS createAt,\n" +
+            "       lesson_info.IMG_URL AS imgUrl\n" +
+            "       from lesson_info left join user on lesson_info.CREATOR_ID = user.ID ")
+//    IPage<SkuStock> selectPage(IPage<SkuStock> page, @Param("ew")Wrapper<SkuStock> queryWrapper);
+    Page<Map> selectLessonPage(Page page);
 }

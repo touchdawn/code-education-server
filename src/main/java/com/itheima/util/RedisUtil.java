@@ -1051,6 +1051,9 @@ public final class RedisUtil {
         return redisTemplate.opsForZSet().add(key, value, score);
     }
 
+    public Boolean zAdd2(String key, String value, double score) {
+        return redisTemplate2.opsForZSet().add(key, value, score);
+    }
     /**
      *
      * @param key

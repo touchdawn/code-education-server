@@ -2,6 +2,7 @@ package com.itheima.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.itheima.controller.utils.ApiResult;
+import com.itheima.domain.LessonChapterSection;
 import com.itheima.domain.LessonInfo;
 import java.util.Map;
 
@@ -50,4 +51,15 @@ public interface LessonService extends IService<LessonInfo> {
     Boolean findCourseSubscribe(Integer courseId, Integer userId);
 
     ApiResult getSubCourseByUserId(Integer userId);
+
+    ApiResult getCourseBySearch(Map searchForm);
+
+    //审核章节
+    ApiResult getCourseByQuery();
+
+    ApiResult updateSectionStatus(LessonChapterSection lessonChapterSection,String auditOpinion);
+
+    ApiResult getCourseByQueryPage(Map page);
+
+//    ApiResult updateCourseById(LessonInfo lessonInfo);
 }

@@ -1,6 +1,9 @@
 package com.itheima.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itheima.controller.utils.ApiResult;
 import com.itheima.dao.*;
@@ -8,6 +11,7 @@ import com.itheima.domain.*;
 import com.itheima.service.FileStorageService;
 import com.itheima.service.LessonChapterSectionService;
 import com.itheima.service.LessonService;
+import com.itheima.service.UserMessageService;
 import com.itheima.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +39,9 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
 
     @Autowired
     private FileStorageService fileStorageService;
+
+    @Autowired
+    private UserMessageService userMessageService;
 
     @Autowired
     private LessonChapterSectionService lessonChapterSectionService;
@@ -281,14 +288,16 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
 
     @Override
     public ApiResult addCourseSubscribe(Integer courseId, Integer userId) {
+//        redisUtil.zAdd(courseId + "Subscribe" , userId.toString(),new Date().getTime());
         redisUtil.sAdd(courseId + "Subscribe" , userId.toString());
-        redisUtil.sAdd("User" + userId, courseId.toString());
+        redisUtil.lLeftPush("User" + userId, courseId.toString());
         return ApiResult.T(redisUtil.sHasKey(courseId + "Subscribe",userId));
     }
 
     @Override
     public ApiResult cancelCourseSubscribe(Integer courseId, Integer userId) {
-        redisUtil.sRemove("User" + userId, courseId.toString());
+//        redisUtil.sRemove("User" + userId, courseId.toString());
+        redisUtil.lRemove("User" + userId,0,courseId.toString());
         return ApiResult.T(redisUtil.sRemove(courseId+ "Subscribe",userId.toString()));
     }
 
@@ -304,28 +313,184 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
 
     @Override
     public ApiResult getSubCourseByUserId(Integer userId) {
-        Set<String> strings = redisUtil.setMembers("User" + userId);
-
-        Iterator i = strings.iterator();
+        List<String> strings = redisUtil.lRange("User" + userId,0,-1);
         List list=new ArrayList();
-        while (i.hasNext()){
-        LessonInfo lessonInfo = lessonInfoDao.selectById(Integer.parseInt(i.next().toString()));
+
+        strings.forEach(str->{
+            LessonInfo lessonInfo = lessonInfoDao.selectById(Integer.parseInt(str));
             list.add(lessonInfo);
-        }
+        });
         return ApiResult.T(list);
+
+//        Iterator i = strings.iterator();
+//        List list=new ArrayList();
+//        while (i.hasNext()){
+//        LessonInfo lessonInfo = lessonInfoDao.selectById(Integer.parseInt(i.next().toString()));
+//            list.add(lessonInfo);
+//        }
+//        return ApiResult.T(list);
     }
 
 
-//    public void findByLike() {
-//        QueryWrapper<LessonInfo> queryWrapper = new QueryWrapper<LessonInfo>();
-//        queryWrapper.like("name", "%乔%");
-//        List<LessonInfo> userList =
-//                lessonInfoDao.selectList(queryWrapper);
-//        System.out.println(userList);
+
+
+
+
+//
+//    @Override
+//    public ApiResult searchCourse(Map searchForm) {
+//        QueryWrapper<LessonInfo> queryWrapper = new QueryWrapper();
+//        Map queryMap = new HashMap<>();
+////        Object searchData = searchForm.get("searchData");
+////        Map stringObjectMap =  new HashMap<>();
+//
+////        if (searchForm.get("status") != null){
+////            queryMap.put("status",searchForm.get("status"));
+////        }
+////        if (searchForm.get("teacherName") != null){
+////            queryMap.put("teacherName",searchForm.get("teacherName"));
+////        }
+//
+//
+////        if (searchForm.get("id") != null){
+////            int id = Integer.parseInt(searchForm.get("id").toString());
+////            stringObjectMap.put("id",searchForm.get("id").toString());
+////        }
+//
+////        Object searchData = searchForm.get("searchData");
+////        try {
+////            stringObjectMap = objectToMap(searchData);
+////        } catch (Exception e) {
+////        }
+//        queryWrapper.allEq(searchForm);
+//        System.out.println(queryWrapper.lambda());
+//        System.out.println(queryWrapper.getSqlSelect());
+//        System.out.println(1);
+//        List<LessonInfo> lessonInfos = lessonInfoDao.selectList(queryWrapper);
+//        return ApiResult.T(queryWrapper);
 //    }
-//    public List addQiniuUrl(List<LessonInfo> listInput){
-//        listInput.forEach(item ->{
-//            item.getImgUrl(). = item.getImgUrl();
-//        });
-//    };
+//
+////        Iterator i = strings.iterator();
+////        List list=new ArrayList();
+////        while (i.hasNext()){
+////        LessonInfo lessonInfo = lessonInfoDao.selectById(Integer.parseInt(i.next().toString()));
+////            list.add(lessonInfo);
+////        }
+//
+//
+//
+////    public void findByLike() {
+////        QueryWrapper<LessonInfo> queryWrapper = new QueryWrapper<LessonInfo>();
+////        queryWrapper.like("name", "%乔%");
+////        List<LessonInfo> userList =
+////                lessonInfoDao.selectList(queryWrapper);
+////        System.out.println(userList);
+////    }
+////    public List addQiniuUrl(List<LessonInfo> listInput){
+////        listInput.forEach(item ->{
+////            item.getImgUrl(). = item.getImgUrl();
+////        });
+////    };
+
+
+    @Override
+    public ApiResult getCourseBySearch(Map searchForm) {
+        LambdaQueryWrapper<LessonInfo> queryWrapper = new LambdaQueryWrapper<>();
+        Map searchData = (Map) searchForm.get("searchData");
+        if (searchData.get("lessonName") != null){
+            queryWrapper.like(true,LessonInfo::getLessonName,searchData.get("lessonName").toString());
+        }
+        if (searchData.get("teacherId") != null){
+            queryWrapper.eq(true,LessonInfo::getCreatorId,searchData.get("teacherId").toString());
+        }
+        if (searchData.get("status") != null){
+            queryWrapper.eq(true,LessonInfo::getStatus,searchData.get("status").toString());
+        }
+        IPage page = lessonInfoDao.selectPage(new Page((Integer)searchForm.get("current"),(Integer)searchForm.get("size")),queryWrapper);
+        return ApiResult.T(page);
+
+    }
+
+    @Override
+    public ApiResult getCourseByQuery() {
+
+        List<Map> status = lessonChapterSectionDao.getAuditingSection();
+
+        return ApiResult.T(status);
+    }
+
+
+
+    @Override
+    public ApiResult updateSectionStatus(LessonChapterSection lessonChapterSection,String auditOpinion) {
+
+        Integer status = lessonChapterSectionDao.selectById(lessonChapterSection.getId()).getStatus();
+        if (status == 0 && lessonChapterSection.getStatus() == 1){
+            String messageContent = "尊敬的用户：\n"+
+                    "      您上传的《" + lessonChapterSection.getTitle() + "》章节通过审核啦，快去看看吧~";
+            LessonInfo lessonInfo = lessonInfoDao.selectById(lessonChapterSection.getLessonRel());
+            Map<String,String> map = new HashMap<>();
+            map.put("senderId","1");
+            map.put("receiverId",lessonInfo.getCreatorId().toString());
+            map.put("title","课程章节审核通过通知");
+            map.put("content",messageContent);
+            map.put("parentMessageId","-1");
+            Integer callbackId = userMessageService.addMessage(map);
+        } else if (status == 0 && lessonChapterSection.getStatus() == 0 && !Objects.equals(auditOpinion, "审核通过")){
+            String messageContent = "尊敬的用户：\n"+
+                    "      您上传的《" + lessonChapterSection.getTitle() + "》章节未通过审核，请检查后重新上传~" +
+                    "      审核意见：" + auditOpinion;
+            LessonInfo lessonInfo = lessonInfoDao.selectById(lessonChapterSection.getLessonRel());
+            Map<String,String> map = new HashMap<>();
+            map.put("senderId","1");
+            map.put("receiverId",lessonInfo.getCreatorId().toString());
+            map.put("title","课程章节审核未通过");
+            map.put("content",messageContent);
+            map.put("parentMessageId","-1");
+            System.out.println("拒绝了一个审核");
+            Integer callbackId = userMessageService.addMessage(map);
+            System.out.println("===================");
+            System.out.println(callbackId);;
+        }
+        lessonChapterSectionDao.updateById(lessonChapterSection);
+
+        return ApiResult.T();
+    }
+
+    @Override
+    public ApiResult getCourseByQueryPage(Map page) {
+        Integer sectionCount = lessonChapterSectionDao.getSectionCountByStatus(0);
+        String current = page.get("current").toString();
+        String size = page.get("size").toString();
+        Integer currentPage = Integer.parseInt(current) - 1;
+        Integer sizePage = Integer.parseInt(size);
+        Integer totalPage = sectionCount/sizePage;
+        if (sectionCount%sizePage != 0){
+            totalPage = totalPage + 1;
+        }
+        if (currentPage > totalPage){
+            return ApiResult.F("","当前页数大于总页数");
+        }
+        Map map = new HashMap();
+        map.put("current",currentPage);
+        map.put("size",sizePage);
+        map.put("total",sectionCount);
+        List<Map> status = lessonChapterSectionDao.getAuditingSectionByPage(currentPage * sizePage,sizePage);
+        map.put("data",status);
+        return ApiResult.T(map);
+    }
+
+
+//    public static Map<String, Object> objectToMap(Object obj) throws IllegalAccessException {
+//        Map<String, Object> map = new HashMap<String,Object>();
+//        Class<?> clazz = obj.getClass();
+//        for (Field field : clazz.getDeclaredFields()) {
+//            field.setAccessible(true);
+//            String fieldName = field.getName();
+//            Object value = field.get(obj);
+//            map.put(fieldName, value);
+//        }
+//        return map;
+//    }
+
 }

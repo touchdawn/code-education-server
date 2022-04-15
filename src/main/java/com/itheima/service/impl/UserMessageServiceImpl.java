@@ -1,10 +1,14 @@
 package com.itheima.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itheima.controller.utils.ApiResult;
 import com.itheima.dao.UserMessageDao;
 import com.itheima.domain.UserMessage;
 import com.itheima.service.UserMessageService;
+import com.itheima.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +22,11 @@ public class UserMessageServiceImpl extends ServiceImpl<UserMessageDao, UserMess
     @Autowired
     UserMessageDao userMessageDao;
 
+    @Autowired
+    RedisUtil redisUtil;
+
     @Override
-    public ApiResult addMessage(Map<String, String> map) {
+    public Integer addMessage(Map<String, String> map) {
         Integer senderId =Integer.parseInt(map.get("senderId"));
         Integer receiverId =Integer.parseInt( map.get("receiverId"));
         String title = map.get("title");
@@ -31,11 +38,15 @@ public class UserMessageServiceImpl extends ServiceImpl<UserMessageDao, UserMess
         userMessage.setParentId(parentId);
         userMessage.setSenderId(senderId);
         userMessage.setReceiverId(receiverId);
-        userMessage.setCreateAt(new Date());
+        Date date = new Date();
+        userMessage.setCreateAt(date);
         userMessage.setDeleteFlag(1);
         userMessage.setIsRead(1);
-        save(userMessage);
-        return ApiResult.T();
+//        save(userMessage);
+        int insert = userMessageDao.insert(userMessage);
+
+//        Integer idCallback = userMessageDao.idCallback(senderId, receiverId, date);
+        return  userMessage.getId();
     }
 
     @Override
@@ -94,5 +105,24 @@ public class UserMessageServiceImpl extends ServiceImpl<UserMessageDao, UserMess
             userMessageDao.updateById(userMessage);
         }
         return ApiResult.T(userMessageDao.getMessageById(messageId));
+    }
+
+    @Override
+    public ApiResult getMyMessageByPage(Integer userId, Integer current, Integer size) {
+//        Page<Map> page = new Page<>(current, size);
+//        page.setRecords(userMessageDao.getSentMessageByUserId(userId));
+//        page.setTotal(userMessageDao.getSentMessageCountByUserId(userId));
+//        return ApiResult.T(page);
+        IPage<UserMessage> page = new Page<>(current, size);
+        IPage<UserMessage> page1= page(page, new QueryWrapper<UserMessage>()
+                .eq("sender_id", userId)
+                .eq("delete_flag", 1)
+                .eq("receiver_id", 0).orderByDesc("create_at"));
+        return ApiResult.T(page1);
+    }
+
+    public void addMessageDot(Integer senderId, Integer receiverId, Integer messageId) {
+//        redis中添加红点
+//        redisUtil.sAdd(messageId,1);
     }
 }

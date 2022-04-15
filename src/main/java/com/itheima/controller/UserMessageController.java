@@ -16,7 +16,7 @@ public class UserMessageController {
 
     @PostMapping("/addMessage")
     public ApiResult addMessage(@RequestBody Map<String, String> map){
-        return userMessageService.addMessage(map);
+        return ApiResult.T( userMessageService.addMessage(map));
     }
 
     @GetMapping("/getMessageById/{messageId}")
@@ -27,6 +27,11 @@ public class UserMessageController {
     @GetMapping("/getMyMessage/{userId}")
     public ApiResult getMyMessage(@PathVariable Integer userId) {
         return userMessageService.getMyMessage(userId);
+    }
+
+    @GetMapping("/getMyMessageByPage/{userId}")
+    public ApiResult getMyMessageByPage(@PathVariable Integer userId,@RequestParam Integer current,@RequestParam Integer size) {
+        return userMessageService.getMyMessageByPage(userId,current,size);
     }
 
     @GetMapping("/isRead/{messageId}")

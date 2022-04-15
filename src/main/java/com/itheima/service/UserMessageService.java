@@ -7,7 +7,7 @@ import com.itheima.domain.UserMessage;
 import java.util.Map;
 
 public interface UserMessageService extends IService<UserMessage> {
-    ApiResult addMessage(Map<String, String> map);
+    Integer addMessage(Map<String, String> map);
 
     ApiResult setIsRead(Integer messageId);
 
@@ -18,4 +18,6 @@ public interface UserMessageService extends IService<UserMessage> {
     ApiResult postChangeMessage(Map<String, String> map);
 
     ApiResult getMessageById(Integer messageId);
+
+    ApiResult getMyMessageByPage(Integer userId, Integer current, Integer size);
 }
