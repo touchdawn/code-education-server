@@ -436,7 +436,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonInfoDao, LessonInfo> im
             map.put("content",messageContent);
             map.put("parentMessageId","-1");
             Integer callbackId = userMessageService.addMessage(map);
-        } else if (status == 0 && lessonChapterSection.getStatus() == 0 && !Objects.equals(auditOpinion, "审核通过")){
+        } else if (status == 0 && lessonChapterSection.getStatus() == 8 && !Objects.equals(auditOpinion, "审核通过")){
             String messageContent = "尊敬的用户：\n"+
                     "      您上传的《" + lessonChapterSection.getTitle() + "》章节未通过审核，请检查后重新上传~" +
                     "      审核意见：" + auditOpinion;

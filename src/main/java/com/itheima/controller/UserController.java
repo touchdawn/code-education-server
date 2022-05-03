@@ -68,7 +68,7 @@ public class UserController {
     };
 
     @PostMapping ("/getAllByPage")
-    public ApiResult getAllByPage(@RequestBody Map<String,String> map){
+    public ApiResult getAllByPage(@RequestBody Map map){
         return userService.getAllByPage(map);
     };
 

@@ -1,6 +1,7 @@
 package com.itheima.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -162,11 +163,33 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
     }
 
     @Override
-    public ApiResult getAllByPage(Map<String, String> map) {
-        int current = parseInt(map.get("current"));
-        int size = parseInt(map.get("size"));
-        IPage page = new Page(current,size);
-        IPage iPage = userDao.selectPage(page, null);
-        return ApiResult.T(iPage);
+    public ApiResult getAllByPage(Map map) {
+        Map<String,Integer> pageInfo = (Map) map.get("pageInfo");
+//        int current = parseInt((String) pageInfo.get("current"));
+//        int size = parseInt((String) pageInfo.get("size"));
+        int current = pageInfo.get("current");
+        int size = pageInfo.get("size");
+        Map<String,String> searchMap = (Map) map.get("searchMap");
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        if (searchMap != null){
+            String name = searchMap.get("userName");
+            String phone = searchMap.get("phone");
+            String email = searchMap.get("email");
+            if (name != null && !name.equals("")){
+                queryWrapper.like("name",name);
+            }
+            if (phone != null && !phone.equals("")){
+                queryWrapper.like("phone",phone);
+            }
+            if (email != null && !email.equals("")){
+                queryWrapper.like("email",email);
+            }
+
+        }
+//        IPage page = new Page(current,size);
+//        IPage iPage = userDao.selectPage(page, queryWrapper);
+        IPage page2 = userDao.selectPage(new Page(current,size),queryWrapper);
+
+        return ApiResult.T(page2);
     }
 }
