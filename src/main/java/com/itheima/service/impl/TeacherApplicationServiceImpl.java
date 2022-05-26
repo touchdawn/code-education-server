@@ -59,11 +59,11 @@ public class TeacherApplicationServiceImpl extends ServiceImpl<TeacherApplicatio
     public ApiResult approveTeacherApplication(Integer applyId) {
         TeacherApplication teacherApplication = teacherApplicationDao.selectById(applyId);
         teacherApplication.setApplyStatus(1);
-        save(teacherApplication);
+        teacherApplicationDao.updateById(teacherApplication);
 
         User user = userDao.selectById(teacherApplication.getApplicantId());
         user.setType(1);
-        userService.save(user);
+        userService.update(user);
 
         String messageContent = "尊敬的用户" + user.getNickName() + "：\n"+
                 "      恭喜你通过了教师的审核，感谢彼此的相遇，让我们一起为教育事业增光添彩吧！\n"+
@@ -81,12 +81,11 @@ public class TeacherApplicationServiceImpl extends ServiceImpl<TeacherApplicatio
     @Override
     public ApiResult disApproveTeacherApplication(Integer applyId) {
         TeacherApplication teacherApplication = teacherApplicationDao.selectById(applyId);
-        teacherApplication.setApplyStatus(1);
-        save(teacherApplication);
-
+        teacherApplication.setApplyStatus(9);
+        teacherApplicationDao.updateById(teacherApplication);
         User user = userDao.selectById(teacherApplication.getApplicantId());
         user.setType(0);
-        userService.save(user);
+        userService.update(user);
 
         String messageContent = "尊敬的用户" + user.getNickName() + "：\n"+
                                 "      很抱歉，您提交的教师申请并未通过，您可以稍后继续提交申请。\n" +

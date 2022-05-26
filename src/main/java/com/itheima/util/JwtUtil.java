@@ -12,19 +12,18 @@ public class JwtUtil {
     public static String createToken(User user){
         JwtBuilder jwtBuilder = Jwts.builder();
         String jwtToken = jwtBuilder
-                //header
-                .setHeaderParam("typ", "JWT")
-                .setHeaderParam("alg","HS256")
-                //payload
-//                .claim("userPhone",user.getPhone())
-                .claim("userEmail",user.getEmail())
-                .claim("role",user.getType())
-                .setSubject("admin-test")
-                .setExpiration(new Date(System.currentTimeMillis() +time))
-                .setId(UUID.randomUUID().toString())
-                //signature
-                .signWith(SignatureAlgorithm.HS256,signature)
-                .compact();
+            //header
+            .setHeaderParam("typ", "JWT")
+            .setHeaderParam("alg","HS256")
+            //payload
+            .claim("userEmail",user.getEmail())
+            .claim("role",user.getType())
+            .setSubject("admin-test")
+            .setExpiration(new Date(System.currentTimeMillis() +time))
+            .setId(UUID.randomUUID().toString())
+            //signature
+            .signWith(SignatureAlgorithm.HS256,signature)
+            .compact();
         System.out.println(jwtToken);
         return jwtToken;
     }

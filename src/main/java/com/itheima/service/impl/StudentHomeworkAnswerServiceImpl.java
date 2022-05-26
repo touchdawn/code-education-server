@@ -43,7 +43,12 @@ public class StudentHomeworkAnswerServiceImpl extends ServiceImpl<StudentHomewor
     public ApiResult addStudentHomeworkAnswer(StudentHomeworkAnswer studentHomeworkAnswer) {
         studentHomeworkAnswer.setCreateAt(new Date());
         studentHomeworkAnswer.setDeleteFlag(1);
-        save(studentHomeworkAnswer);
+        StudentHomeworkAnswer byHwIdAndUserId = studentHomeworkAnswerDao.getByHwIdAndUserId(studentHomeworkAnswer.getHomeworkRel(), studentHomeworkAnswer.getCreatorId());
+        if (byHwIdAndUserId == null) {
+            save(studentHomeworkAnswer);
+        } else {
+            return ApiResult.F("","已经提交过了");
+        }
 
         Integer returnId = studentHomeworkAnswer.getHomeworkRel();
 

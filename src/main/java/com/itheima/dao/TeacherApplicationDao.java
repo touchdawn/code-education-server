@@ -14,6 +14,7 @@ public interface TeacherApplicationDao extends BaseMapper<TeacherApplication> {
 
     @Select("select user.NAME as username,\n" +
             "       user.AVATAR as applierAvatar,\n" +
+            "       ta.ID as id,\n" +
             "       ta.APPLICANT_ID as applicantId,\n" +
             "       ta.CREATE_AT as createAt,\n" +
             "       ta.APPLY_REASON as applyReason,\n" +

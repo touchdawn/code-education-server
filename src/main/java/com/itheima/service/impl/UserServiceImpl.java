@@ -135,8 +135,24 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
     public ApiResult updateUserById(User user) {
         Integer userId = user.getId();
         User user1 = userDao.selectById(userId);
-        user1.setAvatar(user.getAvatar());
-        user1.setNickName(user.getNickName());
+        if (user.getAvatar() != null){
+            user1.setAvatar(user.getAvatar());
+        }
+        if (user.getName() != null){
+            user1.setName(user.getName());
+        }
+        if (user.getEmail() != null){
+            user1.setEmail(user.getEmail());
+        }
+        if (user.getType() != null){
+            user1.setType(user.getType());
+        }
+        if (user.getNickName() != null){
+            user1.setNickName(user.getNickName());
+        }
+        if (user.getPassword() != null){
+            user1.setPassword(user.getPassword());
+        }
         user1.setPhone(user.getPhone());
         user1.setUpdatedAt(new Date());
         int i = userDao.updateById(user1);
@@ -165,14 +181,12 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
     @Override
     public ApiResult getAllByPage(Map map) {
         Map<String,Integer> pageInfo = (Map) map.get("pageInfo");
-//        int current = parseInt((String) pageInfo.get("current"));
-//        int size = parseInt((String) pageInfo.get("size"));
         int current = pageInfo.get("current");
         int size = pageInfo.get("size");
         Map<String,String> searchMap = (Map) map.get("searchMap");
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         if (searchMap != null){
-            String name = searchMap.get("userName");
+            String name = searchMap.get("name");
             String phone = searchMap.get("phone");
             String email = searchMap.get("email");
             if (name != null && !name.equals("")){
@@ -184,12 +198,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
             if (email != null && !email.equals("")){
                 queryWrapper.like("email",email);
             }
-
         }
-//        IPage page = new Page(current,size);
-//        IPage iPage = userDao.selectPage(page, queryWrapper);
         IPage page2 = userDao.selectPage(new Page(current,size),queryWrapper);
-
         return ApiResult.T(page2);
     }
 }

@@ -41,12 +41,21 @@ public class UserMessageServiceImpl extends ServiceImpl<UserMessageDao, UserMess
         Date date = new Date();
         userMessage.setCreateAt(date);
         userMessage.setDeleteFlag(1);
-        userMessage.setIsRead(1);
+        if (senderId == 1){
+            userMessage.setIsRead(0);
+        } else {
+            userMessage.setIsRead(1);
+        }
 //        save(userMessage);
-        int insert = userMessageDao.insert(userMessage);
+        userMessageDao.insert(userMessage);
 
-//        Integer idCallback = userMessageDao.idCallback(senderId, receiverId, date);
-        return  userMessage.getId();
+        Integer idCallback = userMessage.getId();
+        //如果发送者ID为1，redis中添加红点(先不实现了)
+//        if (senderId == 1){
+//            redisUtil.sAdd(idCallback + "IsRead" , senderId.toString());
+//        }
+
+        return idCallback;
     }
 
     @Override
@@ -93,6 +102,12 @@ public class UserMessageServiceImpl extends ServiceImpl<UserMessageDao, UserMess
         } else if (Objects.equals(method, "deleteByAdmin")) {
             userMessageDao.deleteById(messageId);
             return ApiResult.T("物理删除成功");
+        } else if (Objects.equals(method, "deleteNotification")) {
+            UserMessage userMessage = userMessageDao.selectById(messageId);
+            userMessage.setDeleteFlag(0);
+            userMessageDao.updateById(userMessage);
+            return ApiResult.T("系统通知删除成功");
+
         }
         return ApiResult.F("","删除失败");
     }
@@ -117,7 +132,7 @@ public class UserMessageServiceImpl extends ServiceImpl<UserMessageDao, UserMess
         IPage<UserMessage> page1= page(page, new QueryWrapper<UserMessage>()
                 .eq("sender_id", userId)
                 .eq("delete_flag", 1)
-                .eq("receiver_id", 0).orderByDesc("create_at"));
+                .eq("receiver_id", -1).orderByDesc("create_at"));
         return ApiResult.T(page1);
     }
 

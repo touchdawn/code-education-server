@@ -58,7 +58,7 @@ public class AdminController {
         }
         return ApiResult.T(lessonService.updateById(lessonInfo));
     }
-/////////////////////搜课
+/////////////////////搜索课
     @PostMapping("/searchCourse")
     public ApiResult searchCourse(@RequestBody Map searchForm){
         return lessonService.getCourseBySearch(searchForm);

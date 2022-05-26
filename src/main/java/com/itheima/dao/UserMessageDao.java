@@ -20,6 +20,7 @@ public interface UserMessageDao extends BaseMapper<UserMessage> {
             "       user.TYPE as senderType,\n" +
             "       TITLE as title,\n" +
             "       CONTENT as content,\n" +
+            "       RECEIVER_ID as receiverId,\n" +
             "       IS_READ as isRead,\n" +
             "       READ_AT as readAt,\n" +
 //            "       CREATE_AT as sendTime,\n" +
@@ -27,7 +28,8 @@ public interface UserMessageDao extends BaseMapper<UserMessage> {
 //            "       DATE_FORMAT(CREATE_AT, '%m-%d %H:%i') As \"sendTime\"," +
             "       um.ID as messageId\n" +
             "from user_message um left join user on um.SENDER_ID = user.ID\n" +
-            "where RECEIVER_ID = #{userId} and DELETE_FLAG = 1 and RECEIVER_DELETE_FLAG = 1 and user.STATUS = 1\n" +
+            "where (RECEIVER_ID = #{userId} and DELETE_FLAG = 1 and RECEIVER_DELETE_FLAG = 1 and user.STATUS = 1) or" +
+            " (RECEIVER_ID = -1 and DELETE_FLAG = 1)\n" +
             "order by IS_READ desc , CREATE_AT desc")
     List<Map> getMessageByUserId(Integer userId);
 

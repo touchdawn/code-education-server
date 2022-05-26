@@ -37,11 +37,16 @@ public class CourseHomeworkServiceImpl extends ServiceImpl<CourseHomeworkDao, Co
 
     @Override
     public ApiResult addHomework(CourseHomework courseHomework) {
-        System.out.println("开始添加作业");
+        System.out.println("教师开始添加作业");
         Date date = new Date();
         courseHomework.setCreateAt(date);
         courseHomework.setDeleteFlag(1);
-        save(courseHomework);
+        Integer check = courseHomeworkDao.getId(courseHomework.getHomeworkName(), courseHomework.getCourseRel(), courseHomework.getCreatorId());
+        if (check == null){
+            save(courseHomework);
+        } else {
+            return ApiResult.F("","该作业已存在");
+        }
         System.out.println("作业添加成功");
         //得到添加后的ID
 
